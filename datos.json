@@ -26,7 +26,16 @@
       "foto": ""
     }
   ],
-  "rutas": [],
+  "rutas": [
+    {
+      "id": 1,
+      "ruta": "La Habana - Puerto Padre",
+      "salida": "Terminal de ómnibus",
+      "horario": "3pm",
+      "precio": "10,000 cup",
+      "foto": ""
+    }
+  ],
   "cardsSplash": [
     {
       "id": 1,
