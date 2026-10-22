@@ -16,41 +16,8 @@
     "info3Titulo": "Reserva directa",
     "info3Texto": "Sin intermediarios: tu reserva llega directo a nuestro WhatsApp."
   },
-  "guaguas": [
-    {
-      "id": 2,
-      "icono": "🚐",
-      "nombre": "Minibús Hyundai",
-      "capacidad": "20 pasajeros",
-      "descripcion": "Ideal para rutas cortas. Música y cargadores USB.",
-      "foto": ""
-    },
-    {
-      "id": 3,
-      "icono": "🚍",
-      "nombre": "Autobús Yutong",
-      "capacidad": "45 pasajeros",
-      "descripcion": "Amplio equipaje, aire acondicionado y pantallas.",
-      "foto": ""
-    }
-  ],
+  "guaguas": [],
   "rutas": [
-    {
-      "id": 1,
-      "ruta": "La Habana → Varadero",
-      "salida": "Terminal Central",
-      "horario": "8:00 AM / 2:00 PM",
-      "precio": "$25 USD",
-      "foto": ""
-    },
-    {
-      "id": 2,
-      "ruta": "La Habana → Viñales",
-      "salida": "Terminal Central",
-      "horario": "7:00 AM",
-      "precio": "$30 USD",
-      "foto": ""
-    },
     {
       "id": 3,
       "ruta": "Varadero → La Habana",
