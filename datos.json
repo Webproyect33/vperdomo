@@ -16,7 +16,16 @@
     "info3Titulo": "Reserva directa",
     "info3Texto": "Sin intermediarios: tu reserva llega directo a nuestro WhatsApp."
   },
-  "guaguas": [],
+  "guaguas": [
+    {
+      "id": 1,
+      "nombre": "Guagua Yutong",
+      "capacidad": "42 pasajeros",
+      "descripcion": "Aire acondicionado",
+      "icono": "🚌",
+      "foto": ""
+    }
+  ],
   "rutas": [],
   "cardsSplash": [
     {
