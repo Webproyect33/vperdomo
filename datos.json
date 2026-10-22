@@ -34,6 +34,14 @@
       "horario": "3pm",
       "precio": "10,000 cup",
       "foto": ""
+    },
+    {
+      "id": 2,
+      "ruta": "Prueba",
+      "salida": "Prueba",
+      "horario": "3pm",
+      "precio": "10,000 cup",
+      "foto": ""
     }
   ],
   "cardsSplash": [
