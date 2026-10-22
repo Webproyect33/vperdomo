@@ -1,0 +1,95 @@
+{
+  "config": {
+    "whatsapp": "5350053909",
+    "headerTitulo": "🚐 Viajes Perdomo",
+    "headerSub": "Guaguas, rutas y reservas directas por WhatsApp",
+    "heroTitulo": "Bienvenido a Viajes Perdomo",
+    "heroTexto": "Tu transporte cómodo, seguro y directo. Reserva en segundos tocando el botón verde y completa el formulario.",
+    "splashSlogan": "Tu viaje, nuestra pasión",
+    "info1Icono": "🚌",
+    "info1Titulo": "Flota moderna",
+    "info1Texto": "Guaguas con aire acondicionado, WiFi y asientos cómodos.",
+    "info2Icono": "🕒",
+    "info2Titulo": "Horarios flexibles",
+    "info2Texto": "Salidas diarias hacia los destinos más populares.",
+    "info3Icono": "📱",
+    "info3Titulo": "Reserva directa",
+    "info3Texto": "Sin intermediarios: tu reserva llega directo a nuestro WhatsApp."
+  },
+  "guaguas": [
+    {
+      "id": 1,
+      "icono": "🚌",
+      "nombre": "Guagua Toyota Coaster",
+      "capacidad": "30 pasajeros",
+      "descripcion": "Aire acondicionado, asientos reclinables y WiFi.",
+      "foto": ""
+    },
+    {
+      "id": 2,
+      "icono": "🚐",
+      "nombre": "Minibús Hyundai",
+      "capacidad": "20 pasajeros",
+      "descripcion": "Ideal para rutas cortas. Música y cargadores USB.",
+      "foto": ""
+    },
+    {
+      "id": 3,
+      "icono": "🚍",
+      "nombre": "Autobús Yutong",
+      "capacidad": "45 pasajeros",
+      "descripcion": "Amplio equipaje, aire acondicionado y pantallas.",
+      "foto": ""
+    }
+  ],
+  "rutas": [
+    {
+      "id": 1,
+      "ruta": "La Habana → Varadero",
+      "salida": "Terminal Central",
+      "horario": "8:00 AM / 2:00 PM",
+      "precio": "$25 USD",
+      "foto": ""
+    },
+    {
+      "id": 2,
+      "ruta": "La Habana → Viñales",
+      "salida": "Terminal Central",
+      "horario": "7:00 AM",
+      "precio": "$30 USD",
+      "foto": ""
+    },
+    {
+      "id": 3,
+      "ruta": "Varadero → La Habana",
+      "salida": "Hotel Parque Central",
+      "horario": "10:00 AM / 4:00 PM",
+      "precio": "$25 USD",
+      "foto": ""
+    },
+    {
+      "id": 4,
+      "ruta": "La Habana → Trinidad",
+      "salida": "Terminal Central",
+      "horario": "6:30 AM",
+      "precio": "$35 USD",
+      "foto": ""
+    },
+    {
+      "id": 5,
+      "ruta": "Trinidad → La Habana",
+      "salida": "Terminal Trinidad",
+      "horario": "9:00 AM",
+      "precio": "$35 USD",
+      "foto": ""
+    }
+  ],
+  "cardsSplash": [
+    { "id": 1, "icono": "🚐", "titulo": "Flota moderna", "texto": "Guaguas cómodas con aire acondicionado y WiFi." },
+    { "id": 2, "icono": "🛡️", "titulo": "Viajes seguros", "texto": "Conductores profesionales y vehículos revisados." },
+    { "id": 3, "icono": "💰", "titulo": "Mejores precios", "texto": "Tarifas accesibles sin intermediarios." },
+    { "id": 4, "icono": "📍", "titulo": "Rutas populares", "texto": "La Habana, Varadero, Viñales, Trinidad y más." },
+    { "id": 5, "icono": "📱", "titulo": "Reserva fácil", "texto": "Reserva en segundos directo a nuestro WhatsApp." },
+    { "id": 6, "icono": "🕒", "titulo": "Salidas diarias", "texto": "Horarios flexibles que se adaptan a ti." }
+  ]
+}

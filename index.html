@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viajes Perdomo - Reservas por WhatsApp</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b3d91">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Viajes Perdomo">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+
+<style>
+  :root{
+    --azul:#0b3d91;
+    --azul-claro:#1e6fd9;
+    --verde-wa:#25D366;
+    --gris:#f4f6fb;
+    --texto:#1a1a1a;
+    --sombra:0 6px 20px rgba(0,0,0,.12);
+    --radio:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;}
+  body{background:var(--gris);color:var(--texto);line-height:1.5;}
+  a{text-decoration:none;color:inherit;}
+
+  /* SPLASH */
+  #splash{
+    position:fixed;inset:0;z-index:9999;
+    background:linear-gradient(135deg,var(--azul),var(--azul-claro) 60%,#4a9cff);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#fff;overflow:hidden;transition:opacity .8s ease, visibility .8s ease;
+  }
+  #splash.oculto{opacity:0;visibility:hidden;pointer-events:none;}
+  .splash-logo{font-size:clamp(4rem,12vw,7rem);line-height:1;filter:drop-shadow(0 8px 24px rgba(0,0,0,.35));animation:flotar 3s ease-in-out infinite;}
+  @keyframes flotar{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+  .splash-nombre{font-size:clamp(2rem,7vw,3.4rem);font-weight:800;letter-spacing:2px;margin-top:14px;text-align:center;text-shadow:0 4px 18px rgba(0,0,0,.35);animation:aparecerNombre 1s ease both;}
+  .splash-slogan{font-size:clamp(.85rem,2.5vw,1.05rem);opacity:.9;margin-top:8px;letter-spacing:1px;animation:aparecerNombre 1s ease .3s both;}
+  @keyframes aparecerNombre{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+  .splash-carrusel{position:relative;width:100%;max-width:760px;height:230px;margin-top:38px;perspective:1200px;perspective-origin:50% 50%;display:flex;align-items:center;justify-content:center;}
+  .carrusel-pista{position:relative;width:100%;height:100%;transform-style:preserve-3d;}
+  .carrusel-card{position:absolute;top:50%;left:50%;width:240px;height:170px;margin:-85px 0 0 -120px;border-radius:16px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 12px 40px rgba(0,0,0,.3);padding:16px;display:flex;flex-direction:column;gap:6px;justify-content:center;transition:transform 1.6s cubic-bezier(.22,.61,.36,1), opacity 1.6s ease, filter 1.6s ease;will-change:transform,opacity;text-align:center;}
+  .carrusel-card .cc-icono{font-size:2rem;}
+  .carrusel-card .cc-titulo{font-size:1rem;font-weight:800;color:#fff;}
+  .carrusel-card .cc-texto{font-size:.8rem;color:rgba(255,255,255,.9);line-height:1.3;}
+  .splash-barra-wrap{width:min(420px,80%);height:10px;border-radius:20px;background:rgba(255,255,255,.25);margin-top:34px;overflow:hidden;box-shadow:inset 0 2px 6px rgba(0,0,0,.2);}
+  .splash-barra{height:100%;width:0%;border-radius:20px;background:linear-gradient(90deg,#a7ffb8,var(--verde-wa));box-shadow:0 0 14px rgba(37,211,102,.8);transition:width .12s linear;}
+  .splash-texto-carga{margin-top:10px;font-size:.82rem;opacity:.85;letter-spacing:.5px;}
+
+  /* HEADER */
+  header{background:linear-gradient(135deg,var(--azul),var(--azul-claro));color:#fff;padding:22px 20px;text-align:center;}
+  header h1{font-size:1.9rem;letter-spacing:.5px;}
+  header p{opacity:.9;font-size:.95rem;margin-top:4px;}
+
+  /* NAV */
+  nav{background:#fff;display:flex;justify-content:center;gap:8px;padding:12px;box-shadow:0 2px 10px rgba(0,0,0,.06);position:sticky;top:0;z-index:50;flex-wrap:wrap;}
+  nav button{padding:10px 18px;border-radius:30px;font-weight:600;font-size:.9rem;color:var(--azul);transition:.2s;border:none;background:transparent;cursor:pointer;}
+  nav button:hover,nav button.activo{background:var(--azul);color:#fff;}
+
+  /* VISTAS */
+  .vista{display:none;}
+  .vista.activa{display:block;animation:aparecer .25s ease;}
+  @keyframes aparecer{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+  /* CONTENEDOR */
+  .contenedor{max-width:1100px;margin:auto;padding:26px 18px 120px;}
+  h2.seccion{font-size:1.6rem;color:var(--azul);margin:10px 0 6px;border-left:6px solid var(--azul-claro);padding-left:12px;}
+  .subtitulo{color:#555;font-size:.95rem;margin-bottom:20px;padding-left:18px;}
+
+  /* HERO */
+  .hero{background:#fff;border-radius:var(--radio);box-shadow:var(--sombra);padding:30px 24px;text-align:center;margin-bottom:22px;}
+  .hero h2{color:var(--azul);font-size:1.5rem;margin-bottom:8px;}
+  .hero p{color:#555;max-width:640px;margin:0 auto 18px;}
+  .hero .acciones-hero{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .btn-hero{padding:12px 22px;border-radius:30px;font-weight:700;font-size:.95rem;border:none;cursor:pointer;transition:.2s;}
+  .btn-hero.primario{background:var(--azul);color:#fff;}
+  .btn-hero.primario:hover{background:var(--azul-claro);}
+  .btn-hero.secundario{background:#e8ecf4;color:var(--azul);}
+  .btn-hero.secundario:hover{background:#d8dee9;}
+
+  .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;}
+  .info-card{background:#fff;border-radius:var(--radio);box-shadow:var(--sombra);padding:20px;text-align:center;}
+  .info-card .icono{font-size:2rem;margin-bottom:8px;}
+  .info-card h3{color:var(--azul);font-size:1.05rem;margin-bottom:4px;}
+  .info-card p{font-size:.88rem;color:#555;}
+
+  /* GUAGUAS */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;}
+  .card{background:#fff;border-radius:var(--radio);box-shadow:var(--sombra);padding:0 0 18px 0;display:flex;flex-direction:column;gap:10px;overflow:hidden;transition:transform .2s;}
+  .card:hover{transform:translateY(-4px);}
+  .card .foto{width:100%;height:170px;object-fit:cover;background:#eef0f5;display:flex;align-items:center;justify-content:center;font-size:3rem;color:#bcc6d8;}
+  .card-body{padding:0 18px;display:flex;flex-direction:column;gap:8px;}
+  .card h3{color:var(--azul);font-size:1.15rem;}
+  .card .detalle{font-size:.9rem;color:#555;}
+
+  /* RUTAS */
+  .tabla-wrap{overflow-x:auto;background:#fff;border-radius:var(--radio);box-shadow:var(--sombra);}
+  table{width:100%;border-collapse:collapse;min-width:620px;}
+  th,td{padding:14px 16px;text-align:left;font-size:.92rem;border-bottom:1px solid #eef0f5;}
+  th{background:var(--azul);color:#fff;font-weight:600;font-size:.85rem;text-transform:uppercase;letter-spacing:.4px;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#f8faff;}
+
+  /* BOTÓN FLOTANTE RESERVA */
+  .btn-reserva-flotante{position:fixed;bottom:22px;right:22px;z-index:120;background:var(--verde-wa);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:40px;font-weight:700;font-size:.95rem;box-shadow:0 8px 24px rgba(37,211,102,.5);transition:.2s;}
+  .btn-reserva-flotante:hover{transform:scale(1.05);background:#1ebe5b;}
+  .btn-reserva-flotante svg{width:22px;height:22px;fill:#fff;}
+
+  /* MODAL RESERVA */
+  .modal-fondo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;padding:16px;}
+  .modal-fondo.abierto{display:flex;}
+  .modal{background:#fff;border-radius:16px;max-width:720px;width:100%;max-height:90vh;overflow-y:auto;padding:24px;position:relative;animation:aparecer .2s ease;}
+  .modal h3{color:var(--azul);margin-bottom:16px;}
+  .cerrar{position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.5rem;cursor:pointer;color:#888;}
+  .modal label{display:block;font-size:.85rem;font-weight:600;margin:10px 0 4px;color:#333;}
+  .modal input,.modal select,.modal textarea{width:100%;padding:10px 12px;border:1px solid #d5dbe8;border-radius:8px;font-size:.9rem;font-family:inherit;}
+  .modal textarea{resize:vertical;min-height:70px;}
+  .modal .fila{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .modal .acciones{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+  .btn{padding:11px 20px;border-radius:30px;border:none;cursor:pointer;font-weight:700;font-size:.9rem;transition:.2s;}
+  .btn-gris{background:#e8ecf4;color:#333;}
+  .btn-gris:hover{background:#d8dee9;}
+  .btn-wa{display:inline-flex;align-items:center;gap:8px;justify-content:center;background:var(--verde-wa);color:#fff;font-weight:700;font-size:.92rem;padding:12px 20px;border-radius:30px;box-shadow:0 4px 12px rgba(37,211,102,.4);transition:.2s;border:none;cursor:pointer;}
+  .btn-wa:hover{background:#1ebe5b;transform:scale(1.02);}
+  .btn-wa svg{width:18px;height:18px;fill:#fff;}
+  .form-reserva .aviso{background:#eef6ff;border-left:4px solid var(--azul-claro);padding:10px 14px;border-radius:8px;font-size:.85rem;color:#334;margin-bottom:8px;}
+
+  footer{background:var(--azul);color:#fff;text-align:center;padding:26px 16px;font-size:.88rem;}
+  footer a{color:#9fe6b0;font-weight:600;}
+
+  /* BANNER INSTALAR PWA */
+  #bannerInstalar{
+    display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
+    background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.25);
+    padding:14px 18px;z-index:150;max-width:340px;width:calc(100% - 32px);
+    align-items:center;gap:12px;
+  }
+  #bannerInstalar.visible{display:flex;}
+  #bannerInstalar .bi-texto{flex:1;font-size:.85rem;}
+  #bannerInstalar .bi-texto strong{display:block;color:var(--azul);font-size:.92rem;}
+  #bannerInstalar .bi-btn{background:var(--azul);color:#fff;border:none;padding:8px 14px;border-radius:30px;font-weight:700;font-size:.82rem;cursor:pointer;white-space:nowrap;}
+  #bannerInstalar .bi-cerrar{background:none;border:none;font-size:1.2rem;color:#888;cursor:pointer;padding:0 4px;}
+
+  @media(max-width:600px){
+    header h1{font-size:1.4rem;}
+    .fila{grid-template-columns:1fr!important;}
+    nav button{padding:8px 12px;font-size:.82rem;}
+    .btn-reserva-flotante{padding:12px 16px;font-size:.85rem;bottom:16px;right:16px;}
+    .splash-carrusel{height:200px;margin-top:26px;}
+    .carrusel-card{width:200px;height:150px;margin:-75px 0 0 -100px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-logo">🚐</div>
+  <div class="splash-nombre">Viajes Perdomo</div>
+  <div class="splash-slogan" id="splashSlogan">Tu viaje, nuestra pasión</div>
+  <div class="splash-carrusel">
+    <div class="carrusel-pista" id="carruselPista"></div>
+  </div>
+  <div class="splash-barra-wrap">
+    <div class="splash-barra" id="splashBarra"></div>
+  </div>
+  <div class="splash-texto-carga" id="splashTexto">Cargando experiencias...</div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <h1 id="headerTitulo">🚐 Viajes Perdomo</h1>
+  <p id="headerSub">Guaguas, rutas y reservas directas por WhatsApp</p>
+</header>
+
+<!-- NAV -->
+<nav>
+  <button data-vista="inicio" class="activo" onclick="cambiarVista('inicio', this)">🏠 Inicio</button>
+  <button data-vista="guaguas" onclick="cambiarVista('guaguas', this)">🚌 Guaguas</button>
+  <button data-vista="rutas" onclick="cambiarVista('rutas', this)">🗺️ Rutas</button>
+</nav>
+
+<div class="contenedor">
+
+  <!-- VISTA INICIO -->
+  <section class="vista activa" id="vista-inicio">
+    <div class="hero">
+      <h2 id="heroTitulo">Bienvenido a Viajes Perdomo</h2>
+      <p id="heroTexto">Tu transporte cómodo, seguro y directo.</p>
+      <div class="acciones-hero">
+        <button class="btn-hero primario" onclick="abrirReserva()">📝 Reservar ahora</button>
+        <button class="btn-hero secundario" onclick="cambiarVista('rutas', document.querySelector('[data-vista=rutas]'))">Ver rutas</button>
+      </div>
+    </div>
+    <div class="info-grid" id="infoGrid"></div>
+  </section>
+
+  <!-- VISTA GUAGUAS -->
+  <section class="vista" id="vista-guaguas">
+    <h2 class="seccion">Nuestras Guaguas</h2>
+    <p class="subtitulo">Flota cómoda, segura y lista para llevarte a tu destino.</p>
+    <div class="grid" id="listaGuaguas"></div>
+  </section>
+
+  <!-- VISTA RUTAS -->
+  <section class="vista" id="vista-rutas">
+    <h2 class="seccion">Rutas Disponibles</h2>
+    <p class="subtitulo">Toca el botón flotante verde "Reservar" y completa el formulario.</p>
+    <div class="tabla-wrap">
+      <table>
+        <thead>
+          <tr><th>Ruta</th><th>Salida</th><th>Horario</th><th>Precio</th></tr>
+        </thead>
+        <tbody id="tablaRutas"></tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<!-- BOTÓN FLOTANTE -->
+<button class="btn-reserva-flotante" onclick="abrirReserva()" title="Reservar por WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm5.8 14.1c-.25.7-1.45 1.35-2 1.4-.55.05-1.05.25-3.5-.75-2.95-1.2-4.8-4.25-4.95-4.45-.15-.2-1.15-1.55-1.15-2.95s.75-2.1 1-2.4c.25-.3.55-.35.75-.35s.4 0 .6.05c.2.05.45-.05.7.55.25.6.85 2.05.95 2.2.1.15.15.35.05.55-.1.2-.15.35-.3.55-.15.2-.3.4-.45.55-.15.15-.3.3-.15.6.15.3.7 1.15 1.5 1.85 1.05.9 1.9 1.2 2.2 1.35.3.15.45.1.6-.05.15-.15.7-.8.9-1.1.2-.3.4-.25.65-.15.25.1 1.6.75 1.85.9.25.15.4.2.45.35.05.15.05.85-.2 1.55z"/></svg>
+  Reservar
+</button>
+
+<!-- MODAL RESERVA -->
+<div class="modal-fondo" id="modalReserva">
+  <div class="modal form-reserva">
+    <button class="cerrar" onclick="cerrarReserva()">✕</button>
+    <h3>📝 Formulario de Reserva</h3>
+    <div class="aviso">
+      Completa los datos y pulsa <strong>"Enviar por WhatsApp"</strong>. Se abrirá WhatsApp con tu reserva ya escrita.
+    </div>
+    <label>Nombre completo *</label>
+    <input id="resNombre" placeholder="Ej: Juan Pérez" autocomplete="name">
+    <div class="fila">
+      <div>
+        <label>Teléfono de contacto *</label>
+        <input id="resTelefono" placeholder="Ej: +53 5 1234567" inputmode="tel">
+      </div>
+      <div>
+        <label>Cantidad de pasajeros *</label>
+        <input id="resPasajeros" type="number" min="1" value="1">
+      </div>
+    </div>
+    <label>Ruta deseada *</label>
+    <select id="resRuta"><option value="">— Selecciona una ruta —</option></select>
+    <div class="fila">
+      <div>
+        <label>Fecha del viaje *</label>
+        <input id="resFecha" type="date">
+      </div>
+      <div>
+        <label>Horario preferido</label>
+        <input id="resHorario" placeholder="Ej: 8:00 AM">
+      </div>
+    </div>
+    <label>Notas adicionales (opcional)</label>
+    <textarea id="resNotas" placeholder="Ej: Llevo equipaje grande..."></textarea>
+    <div class="acciones">
+      <button class="btn btn-gris" onclick="cerrarReserva()">Cancelar</button>
+      <button class="btn-wa" onclick="enviarReserva()">
+        <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91C21.95 6.45 17.5 2 12.04 2zm5.8 14.1c-.25.7-1.45 1.35-2 1.4-.55.05-1.05.25-3.5-.75-2.95-1.2-4.8-4.25-4.95-4.45-.15-.2-1.15-1.55-1.15-2.95s.75-2.1 1-2.4c.25-.3.55-.35.75-.35s.4 0 .6.05c.2.05.45-.05.7.55.25.6.85 2.05.95 2.2.1.15.15.35.05.55-.1.2-.15.35-.3.55-.15.2-.3.4-.45.55-.15.15-.3.3-.15.6.15.3.7 1.15 1.5 1.85 1.05.9 1.9 1.2 2.2 1.35.3.15.45.1.6-.05.15-.15.7-.8.9-1.1.2-.3.4-.25.65-.15.25.1 1.6.75 1.85.9.25.15.4.2.45.35.05.15.05.85-.2 1.55z"/></svg>
+        Enviar por WhatsApp
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© <span id="anio"></span> Viajes Perdomo — Todos los derechos reservados.</p>
+  <p style="margin-top:6px;">Reservas: <a href="#" id="footerWhatsapp">+53 5 0053909</a></p>
+</footer>
+
+<!-- BANNER INSTALAR PWA -->
+<div id="bannerInstalar">
+  <div class="bi-texto">
+    <strong>📲 Instala Viajes Perdomo</strong>
+    Accede más rápido desde tu pantalla de inicio.
+  </div>
+  <button class="bi-btn" onclick="instalarPWA()">Instalar</button>
+  <button class="bi-cerrar" onclick="cerrarBannerPWA()">✕</button>
+</div>
+
+<script>
+/* ============================================================
+   CONFIGURACIÓN GLOBAL
+   ============================================================ */
+let DATA = null;
+let WHATSAPP_NUMERO = "5350053909"; // se sobreescribe con datos.json
+const SPLASH_DURACION = 10000;
+const ROTACION_MS = 3200;
+
+/* ============================================================
+   CARGA DE DATOS DESDE datos.json
+   ============================================================ */
+async function cargarDatos(){
+  try{
+    const resp = await fetch("datos.json", {cache: "no-store"});
+    if(!resp.ok) throw new Error("No se pudo cargar datos.json");
+    DATA = await resp.json();
+    WHATSAPP_NUMERO = (DATA.config && DATA.config.whatsapp) || "5350053909";
+    return true;
+  }catch(e){
+    console.warn("Error cargando datos.json, usando datos por defecto:", e);
+    DATA = datosPorDefecto();
+    WHATSAPP_NUMERO = DATA.config.whatsapp;
+    return false;
+  }
+}
+
+function datosPorDefecto(){
+  return {
+    config: {
+      whatsapp: "5350053909",
+      headerTitulo: "🚐 Viajes Perdomo",
+      headerSub: "Guaguas, rutas y reservas directas por WhatsApp",
+      heroTitulo: "Bienvenido a Viajes Perdomo",
+      heroTexto: "Tu transporte cómodo, seguro y directo.",
+      splashSlogan: "Tu viaje, nuestra pasión",
+      info1Icono: "🚌", info1Titulo: "Flota moderna", info1Texto: "Guaguas con aire acondicionado, WiFi y asientos cómodos.",
+      info2Icono: "🕒", info2Titulo: "Horarios flexibles", info2Texto: "Salidas diarias hacia los destinos más populares.",
+      info3Icono: "📱", info3Titulo: "Reserva directa", info3Texto: "Sin intermediarios: tu reserva llega directo a nuestro WhatsApp."
+    },
+    guaguas: [],
+    rutas: [],
+    cardsSplash: []
+  };
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function renderTodo(){
+  const c = DATA.config;
+
+  // Header
+  document.getElementById("headerTitulo").textContent = c.headerTitulo || "🚐 Viajes Perdomo";
+  document.getElementById("headerSub").textContent = c.headerSub || "";
+  document.getElementById("heroTitulo").textContent = c.heroTitulo || "";
+  document.getElementById("heroTexto").textContent = c.heroTexto || "";
+  document.getElementById("splashSlogan").textContent = c.splashSlogan || "Tu viaje, nuestra pasión";
+  document.getElementById("anio").textContent = new Date().getFullYear();
+
+  // Footer WhatsApp
+  const fw = document.getElementById("footerWhatsapp");
+  fw.href = "https://wa.me/" + WHATSAPP_NUMERO;
+  fw.textContent = "+" + WHATSAPP_NUMERO;
+
+  // Info cards
+  const infoGrid = document.getElementById("infoGrid");
+  infoGrid.innerHTML = `
+    <div class="info-card">
+      <div class="icono">${c.info1Icono || "🚌"}</div>
+      <h3>${c.info1Titulo || ""}</h3>
+      <p>${c.info1Texto || ""}</p>
+    </div>
+    <div class="info-card">
+      <div class="icono">${c.info2Icono || "🕒"}</div>
+      <h3>${c.info2Titulo || ""}</h3>
+      <p>${c.info2Texto || ""}</p>
+    </div>
+    <div class="info-card">
+      <div class="icono">${c.info3Icono || "📱"}</div>
+      <h3>${c.info3Titulo || ""}</h3>
+      <p>${c.info3Texto || ""}</p>
+    </div>
+  `;
+
+  // Guaguas
+  const lg = document.getElementById("listaGuaguas");
+  if(!DATA.guaguas.length){
+    lg.innerHTML = `<p style="color:#888;">No hay guaguas registradas.</p>`;
+  }else{
+    lg.innerHTML = DATA.guaguas.map(g => `
+      <div class="card">
+        ${g.foto
+          ? `<img class="foto" src="${g.foto}" alt="${g.nombre}">`
+          : `<div class="foto">${g.icono || "🚌"}</div>`}
+        <div class="card-body">
+          <h3>${g.icono || "🚌"} ${g.nombre}</h3>
+          <p class="detalle">👥 ${g.capacidad}</p>
+          <p class="detalle">${g.descripcion || ""}</p>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  // Rutas
+  const tr = document.getElementById("tablaRutas");
+  if(!DATA.rutas.length){
+    tr.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#888;padding:30px;">No hay rutas disponibles.</td></tr>`;
+  }else{
+    tr.innerHTML = DATA.rutas.map(r => `
+      <tr>
+        <td>
+          ${r.foto ? `<img src="${r.foto}" alt="" style="width:44px;height:44px;border-radius:6px;object-fit:cover;vertical-align:middle;margin-right:8px;">` : ""}
+          <strong>${r.ruta}</strong>
+        </td>
+        <td>${r.salida}</td>
+        <td>${r.horario}</td>
+        <td><strong style="color:var(--verde-wa);">${r.precio}</strong></td>
+      </tr>
+    `).join("");
+  }
+
+  // Select rutas del formulario
+  renderSelectRutas();
+}
+
+function renderSelectRutas(){
+  const sel = document.getElementById("resRuta");
+  const actual = sel.value;
+  sel.innerHTML = `<option value="">— Selecciona una ruta —</option>` +
+    DATA.rutas.map(r => `<option value="${r.ruta}">${r.ruta} — ${r.precio}</option>`).join("");
+  if(actual) sel.value = actual;
+}
+
+/* ============================================================
+   NAVEGACIÓN
+   ============================================================ */
+function cambiarVista(nombre, boton){
+  document.querySelectorAll(".vista").forEach(v => v.classList.remove("activa"));
+  const vista = document.getElementById("vista-" + nombre);
+  if(vista) vista.classList.add("activa");
+  document.querySelectorAll("nav button").forEach(b => b.classList.remove("activo"));
+  if(boton) boton.classList.add("activo");
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+/* ============================================================
+   RESERVA
+   ============================================================ */
+function abrirReserva(){
+  renderSelectRutas();
+  document.getElementById("modalReserva").classList.add("abierto");
+  setTimeout(()=>document.getElementById("resNombre").focus(), 100);
+}
+function cerrarReserva(){
+  document.getElementById("modalReserva").classList.remove("abierto");
+}
+
+function enviarReserva(){
+  const nombre = document.getElementById("resNombre").value.trim();
+  const telefono = document.getElementById("resTelefono").value.trim();
+  const pasajeros = document.getElementById("resPasajeros").value.trim();
+  const ruta = document.getElementById("resRuta").value.trim();
+  const fecha = document.getElementById("resFecha").value.trim();
+  const horario = document.getElementById("resHorario").value.trim();
+  const notas = document.getElementById("resNotas").value.trim();
+
+  if(!nombre){ alert("Escribe tu nombre completo."); return; }
+  if(!telefono){ alert("Escribe tu teléfono de contacto."); return; }
+  if(!pasajeros || Number(pasajeros) < 1){ alert("Indica al menos 1 pasajero."); return; }
+  if(!ruta){ alert("Selecciona la ruta deseada."); return; }
+  if(!fecha){ alert("Selecciona la fecha del viaje."); return; }
+
+  let fechaLegible = fecha;
+  try{
+    const d = new Date(fecha + "T00:00:00");
+    fechaLegible = d.toLocaleDateString("es-ES", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
+  }catch(e){}
+
+  const lineas = [
+    "🚐 *NUEVA RESERVA - Viajes Perdomo*",
+    "────────────────────",
+    `👤 *Nombre:* ${nombre}`,
+    `📞 *Teléfono:* ${telefono}`,
+    `👥 *Pasajeros:* ${pasajeros}`,
+    `🗺️ *Ruta:* ${ruta}`,
+    `📅 *Fecha:* ${fechaLegible}`
+  ];
+  if(horario) lineas.push(`🕒 *Horario preferido:* ${horario}`);
+  if(notas) lineas.push(`📝 *Notas:* ${notas}`);
+  lineas.push("────────────────────");
+  lineas.push("¡Gracias por reservar con Viajes Perdomo! 🙌");
+
+  const mensaje = encodeURIComponent(lineas.join("\n"));
+  window.open(`https://wa.me/${WHATSAPP_NUMERO}?text=${mensaje}`, "_blank");
+
+  document.getElementById("resNombre").value = "";
+  document.getElementById("resTelefono").value = "";
+  document.getElementById("resPasajeros").value = "1";
+  document.getElementById("resRuta").value = "";
+  document.getElementById("resFecha").value = "";
+  document.getElementById("resHorario").value = "";
+  document.getElementById("resNotas").value = "";
+  cerrarReserva();
+}
+
+/* ============================================================
+   SPLASH
+   ============================================================ */
+function iniciarSplash(){
+  const pista = document.getElementById("carruselPista");
+  const barra = document.getElementById("splashBarra");
+  const texto = document.getElementById("splashTexto");
+  const splash = document.getElementById("splash");
+
+  const cards = DATA.cardsSplash || [];
+  if(cards.length === 0){
+    // Si no hay tarjetas, saltar splash rápido
+    splash.classList.add("oculto");
+    setTimeout(() => splash.remove(), 800);
+    return;
+  }
+
+  cards.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "carrusel-card";
+    div.innerHTML = `
+      <div class="cc-icono">${c.icono || "✨"}</div>
+      <div class="cc-titulo">${c.titulo}</div>
+      <div class="cc-texto">${c.texto}</div>
+    `;
+    pista.appendChild(div);
+  });
+
+  const allCards = Array.from(pista.children);
+  const total = allCards.length;
+  let indice = 0;
+
+  function posicionar(){
+    allCards.forEach((card, i) => {
+      let diff = i - indice;
+      if(diff > total / 2) diff -= total;
+      if(diff < -total / 2) diff += total;
+      const abs = Math.abs(diff);
+      let x, z, rotY, opacidad, escala;
+      if(abs <= 2){
+        x = diff * 150; z = -abs * 200; rotY = diff * -32;
+        opacidad = 1 - abs * 0.28; escala = 1 - abs * 0.14;
+      }else{
+        x = diff * 150; z = -600; rotY = diff * -32; opacidad = 0; escala = .5;
+      }
+      card.style.transform = `translateX(${x}px) translateZ(${z}px) rotateY(${rotY}deg) scale(${escala})`;
+      card.style.opacity = opacidad;
+      card.style.zIndex = 100 - abs;
+      card.style.filter = abs === 0 ? "none" : `blur(${abs * 0.6}px)`;
+    });
+  }
+  posicionar();
+
+  const intervalo = setInterval(() => {
+    indice = (indice + 1) % total;
+    posicionar();
+  }, ROTACION_MS);
+
+  const inicio = performance.now();
+  const mensajes = [
+    "Cargando experiencias...",
+    "Preparando tu viaje...",
+    "Conectando con nuestras guaguas...",
+    "Organizando las mejores rutas...",
+    "Casi listo...",
+    "¡Bienvenido!"
+  ];
+
+  function actualizarBarra(now){
+    const transcurrido = now - inicio;
+    const pct = Math.min(100, (transcurrido / SPLASH_DURACION) * 100);
+    barra.style.width = pct + "%";
+    const idx = Math.min(mensajes.length - 1, Math.floor(pct / (100 / mensajes.length)));
+    texto.textContent = mensajes[idx];
+    if(transcurrido < SPLASH_DURACION){
+      requestAnimationFrame(actualizarBarra);
+    }else{
+      clearInterval(intervalo);
+      splash.classList.add("oculto");
+      setTimeout(() => splash.remove(), 900);
+    }
+  }
+  requestAnimationFrame(actualizarBarra);
+}
+
+/* ============================================================
+   EVENTOS GLOBALES
+   ============================================================ */
+document.getElementById("modalReserva").addEventListener("click", e => {
+  if(e.target.id === "modalReserva") cerrarReserva();
+});
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape") cerrarReserva();
+});
+
+/* ============================================================
+   PWA: INSTALACIÓN + SERVICE WORKER
+   ============================================================ */
+let deferredPrompt = null;
+
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  setTimeout(() => {
+    const banner = document.getElementById("bannerInstalar");
+    if(!localStorage.getItem("vp_banner_cerrado")){
+      banner.classList.add("visible");
+    }
+  }, 3000);
+});
+
+function instalarPWA(){
+  if(!deferredPrompt){
+    alert("Para instalar: abre el menú del navegador y selecciona 'Añadir a pantalla de inicio'.");
+    return;
+  }
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(choice => {
+    if(choice.outcome === "accepted"){
+      document.getElementById("bannerInstalar").classList.remove("visible");
+    }
+    deferredPrompt = null;
+  });
+}
+
+function cerrarBannerPWA(){
+  document.getElementById("bannerInstalar").classList.remove("visible");
+  localStorage.setItem("vp_banner_cerrado", "1");
+}
+
+// Registrar Service Worker
+if("serviceWorker" in navigator){
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js")
+      .then(reg => console.log("✅ Service Worker registrado:", reg.scope))
+      .catch(err => console.warn("⚠️ Error registrando SW:", err));
+  });
+}
+
+/* ============================================================
+   INICIO
+   ============================================================ */
+(async function init(){
+  await cargarDatos();
+  renderTodo();
+  iniciarSplash();
+})();
+</script>
+</body>
+</html>
