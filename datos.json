@@ -18,14 +18,6 @@
   },
   "guaguas": [
     {
-      "id": 1,
-      "icono": "🚌",
-      "nombre": "Guagua Toyota Coaster",
-      "capacidad": "30 pasajeros",
-      "descripcion": "Aire acondicionado, asientos reclinables y WiFi.",
-      "foto": ""
-    },
-    {
       "id": 2,
       "icono": "🚐",
       "nombre": "Minibús Hyundai",
@@ -85,11 +77,41 @@
     }
   ],
   "cardsSplash": [
-    { "id": 1, "icono": "🚐", "titulo": "Flota moderna", "texto": "Guaguas cómodas con aire acondicionado y WiFi." },
-    { "id": 2, "icono": "🛡️", "titulo": "Viajes seguros", "texto": "Conductores profesionales y vehículos revisados." },
-    { "id": 3, "icono": "💰", "titulo": "Mejores precios", "texto": "Tarifas accesibles sin intermediarios." },
-    { "id": 4, "icono": "📍", "titulo": "Rutas populares", "texto": "La Habana, Varadero, Viñales, Trinidad y más." },
-    { "id": 5, "icono": "📱", "titulo": "Reserva fácil", "texto": "Reserva en segundos directo a nuestro WhatsApp." },
-    { "id": 6, "icono": "🕒", "titulo": "Salidas diarias", "texto": "Horarios flexibles que se adaptan a ti." }
+    {
+      "id": 1,
+      "icono": "🚐",
+      "titulo": "Flota moderna",
+      "texto": "Guaguas cómodas con aire acondicionado y WiFi."
+    },
+    {
+      "id": 2,
+      "icono": "🛡️",
+      "titulo": "Viajes seguros",
+      "texto": "Conductores profesionales y vehículos revisados."
+    },
+    {
+      "id": 3,
+      "icono": "💰",
+      "titulo": "Mejores precios",
+      "texto": "Tarifas accesibles sin intermediarios."
+    },
+    {
+      "id": 4,
+      "icono": "📍",
+      "titulo": "Rutas populares",
+      "texto": "La Habana, Varadero, Viñales, Trinidad y más."
+    },
+    {
+      "id": 5,
+      "icono": "📱",
+      "titulo": "Reserva fácil",
+      "texto": "Reserva en segundos directo a nuestro WhatsApp."
+    },
+    {
+      "id": 6,
+      "icono": "🕒",
+      "titulo": "Salidas diarias",
+      "texto": "Horarios flexibles que se adaptan a ti."
+    }
   ]
 }
