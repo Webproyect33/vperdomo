@@ -17,32 +17,7 @@
     "info3Texto": "Sin intermediarios: tu reserva llega directo a nuestro WhatsApp."
   },
   "guaguas": [],
-  "rutas": [
-    {
-      "id": 3,
-      "ruta": "Varadero → La Habana",
-      "salida": "Hotel Parque Central",
-      "horario": "10:00 AM / 4:00 PM",
-      "precio": "$25 USD",
-      "foto": ""
-    },
-    {
-      "id": 4,
-      "ruta": "La Habana → Trinidad",
-      "salida": "Terminal Central",
-      "horario": "6:30 AM",
-      "precio": "$35 USD",
-      "foto": ""
-    },
-    {
-      "id": 5,
-      "ruta": "Trinidad → La Habana",
-      "salida": "Terminal Trinidad",
-      "horario": "9:00 AM",
-      "precio": "$35 USD",
-      "foto": ""
-    }
-  ],
+  "rutas": [],
   "cardsSplash": [
     {
       "id": 1,
