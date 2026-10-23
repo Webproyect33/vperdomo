@@ -1,0 +1,131 @@
+{
+  "config": {
+    "whatsapp": "5350053909",
+    "headerNombre": "Viajes Perdomo",
+    "headerLogo": "🚐",
+    "logoUrl": "",
+    "headerSub": "Guaguas, rutas y reservas directas por WhatsApp",
+    "heroTitulo": "Bienvenido a Viajes Perdomo",
+    "heroTexto": "Tu transporte cómodo, seguro y directo. Reserva en segundos tocando el botón verde y completa el formulario.",
+    "splashSlogan": "Tu viaje, nuestra pasión",
+    "info1Icono": "🚌",
+    "info1Titulo": "Flota moderna",
+    "info1Texto": "Guaguas con aire acondicionado, WiFi y asientos cómodos.",
+    "info2Icono": "🕒",
+    "info2Titulo": "Horarios flexibles",
+    "info2Texto": "Salidas diarias hacia los destinos más populares.",
+    "info3Icono": "📱",
+    "info3Titulo": "Reserva directa",
+    "info3Texto": "Sin intermediarios: tu reserva llega directo a nuestro WhatsApp.",
+    "nosotrosTexto": "Viajes Perdomo nació con la idea de ofrecer un transporte cómodo, seguro y confiable para quienes quieren descubrir Cuba sin complicaciones. Llevamos años conectando viajeros con los destinos más hermosos del país, con guaguas modernas y conductores profesionales que conocen cada ruta.",
+    "nosotrosFoto": "",
+    "nosotrosStats": [
+      { "num": "+500", "lbl": "Viajes realizados" },
+      { "num": "+1.200", "lbl": "Clientes felices" },
+      { "num": "5 años", "lbl": "De experiencia" }
+    ],
+    "politicaCancelacion": "Puedes cancelar tu reserva sin coste hasta 24 horas antes de la salida. Si cancelas con menos tiempo, se aplicará un cargo del 50%. Para cancelar, escríbenos por WhatsApp con tu código de reserva.",
+    "privacidad": "En Viajes Perdomo solo recogemos los datos necesarios para gestionar tu reserva: nombre, teléfono, ruta y asientos. Tus datos no se comparten con terceros y se eliminan cuando ya no son necesarios. Puedes solicitar su eliminación escribiéndonos por WhatsApp.",
+    "terminos": "<p>Al reservar con Viajes Perdomo aceptas las siguientes condiciones:</p><ul><li>La reserva queda pendiente hasta que el gestor confirme el asiento por WhatsApp.</li><li>El pago se realiza al abordar la guagua, salvo acuerdo previo.</li><li>Debes llegar 15 minutos antes de la salida.</li><li>Cada pasajero puede llevar una maleta grande y una de mano sin coste.</li><li>Los menores de 5 años viajan gratis en brazos; de 5 a 12 años tienen 50% de descuento.</li></ul>",
+    "sellos": [
+      "✅ Sin pago online",
+      "🔒 Datos protegidos",
+      "🎫 Reserva sin riesgo",
+      "🛡️ Cancelación flexible"
+    ]
+  },
+  "guaguas": [
+    {
+      "id": 1,
+      "icono": "🚌",
+      "nombre": "Guagua Toyota Coaster",
+      "capacidad": "30 pasajeros",
+      "descripcion": "Aire acondicionado, asientos reclinables y WiFi.",
+      "foto": ""
+    },
+    {
+      "id": 2,
+      "icono": "🚐",
+      "nombre": "Minibús Hyundai",
+      "capacidad": "20 pasajeros",
+      "descripcion": "Ideal para rutas cortas. Música y cargadores USB.",
+      "foto": ""
+    },
+    {
+      "id": 3,
+      "icono": "🚍",
+      "nombre": "Autobús Yutong",
+      "capacidad": "45 pasajeros",
+      "descripcion": "Amplio equipaje, aire acondicionado y pantallas.",
+      "foto": ""
+    }
+  ],
+  "rutas": [
+    {
+      "id": 1,
+      "ruta": "La Habana → Varadero",
+      "salida": "Terminal Central",
+      "horario": "8:00 AM / 2:00 PM",
+      "precio": "$25 USD",
+      "capacidad": 20,
+      "foto": ""
+    },
+    {
+      "id": 2,
+      "ruta": "La Habana → Viñales",
+      "salida": "Terminal Central",
+      "horario": "7:00 AM",
+      "precio": "$30 USD",
+      "capacidad": 20,
+      "foto": ""
+    },
+    {
+      "id": 3,
+      "ruta": "Varadero → La Habana",
+      "salida": "Hotel Parque Central",
+      "horario": "10:00 AM / 4:00 PM",
+      "precio": "$25 USD",
+      "capacidad": 20,
+      "foto": ""
+    },
+    {
+      "id": 4,
+      "ruta": "La Habana → Trinidad",
+      "salida": "Terminal Central",
+      "horario": "6:30 AM",
+      "precio": "$35 USD",
+      "capacidad": 20,
+      "foto": ""
+    },
+    {
+      "id": 5,
+      "ruta": "Trinidad → La Habana",
+      "salida": "Terminal Trinidad",
+      "horario": "9:00 AM",
+      "precio": "$35 USD",
+      "capacidad": 20,
+      "foto": ""
+    }
+  ],
+  "cardsSplash": [
+    { "id": 1, "icono": "🚐", "titulo": "Flota moderna", "texto": "Guaguas cómodas con aire acondicionado y WiFi." },
+    { "id": 2, "icono": "🛡️", "titulo": "Viajes seguros", "texto": "Conductores profesionales y vehículos revisados." },
+    { "id": 3, "icono": "💰", "titulo": "Mejores precios", "texto": "Tarifas accesibles sin intermediarios." },
+    { "id": 4, "icono": "📍", "titulo": "Rutas populares", "texto": "La Habana, Varadero, Viñales, Trinidad y más." },
+    { "id": 5, "icono": "📱", "titulo": "Reserva fácil", "texto": "Reserva en segundos directo a nuestro WhatsApp." },
+    { "id": 6, "icono": "🕒", "titulo": "Salidas diarias", "texto": "Horarios flexibles que se adaptan a ti." }
+  ],
+  "testimonios": [
+    { "id": 1, "texto": "Excelente servicio, la guagua muy cómoda y el chofer muy amable.", "autor": "María G.", "estrellas": 5, "fecha": "Marzo 2025" },
+    { "id": 2, "texto": "Reservé por WhatsApp y todo fue rapidísimo. Recomendado.", "autor": "Carlos P.", "estrellas": 5, "fecha": "Febrero 2025" },
+    { "id": 3, "texto": "Viajé a Varadero con mi familia y todo perfecto.", "autor": "Ana L.", "estrellas": 4, "fecha": "Enero 2025" }
+  ],
+  "faqs": [
+    { "id": 1, "pregunta": "¿Cómo reservo mi asiento?", "respuesta": "Toca el botón Reservar, elige tu ruta, fecha y asiento, y envía el código por WhatsApp. El gestor te confirmará." },
+    { "id": 2, "pregunta": "¿Puedo llevar equipaje grande?", "respuesta": "Sí, cada pasajero puede llevar una maleta grande y una de mano sin coste extra." },
+    { "id": 3, "pregunta": "¿Hay descuento para niños?", "respuesta": "Los menores de 5 años viajan gratis si van en brazos. De 5 a 12 años tienen 50% de descuento." },
+    { "id": 4, "pregunta": "¿Qué pasa si llueve?", "respuesta": "Las salidas se mantienen salvo condiciones extremas. En ese caso te avisamos y reprogramamos." },
+    { "id": 5, "pregunta": "¿Puedo cancelar mi reserva?", "respuesta": "Sí, puedes cancelar sin coste hasta 24 horas antes de la salida." }
+  ],
+  "reservas": []
+}

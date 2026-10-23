@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Viajes Perdomo</title>
+<style>
+  :root{
+    --azul:#0b3d91;
+    --azul-claro:#1e6fd9;
+    --verde-wa:#25D366;
+    --rojo:#e74c3c;
+    --amarillo:#f39c12;
+    --gris:#f4f6fb;
+    --texto:#1a1a1a;
+    --sombra:0 6px 20px rgba(0,0,0,.12);
+    --radio:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;}
+  body{background:var(--gris);color:var(--texto);line-height:1.5;}
+
+  /* HEADER */
+  header.admin-header{
+    background:linear-gradient(135deg,var(--azul),var(--azul-claro));
+    color:#fff;padding:22px 20px;text-align:center;position:relative;
+  }
+  header.admin-header h1{font-size:1.7rem;letter-spacing:.5px;}
+  header.admin-header p{opacity:.9;font-size:.9rem;margin-top:4px;}
+
+  /* TABS */
+  .tabs{
+    background:#fff;display:flex;justify-content:center;gap:6px;padding:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,.06);position:sticky;top:0;z-index:50;flex-wrap:wrap;
+  }
+  .tabs button{
+    padding:10px 14px;border-radius:30px;font-weight:600;font-size:.82rem;
+    color:var(--azul);transition:.2s;border:none;background:transparent;cursor:pointer;
+  }
+  .tabs button:hover,.tabs button.activo{background:var(--azul);color:#fff;}
+  .tabs button.vista-previa-btn{background:var(--verde-wa);color:#fff;}
+  .tabs button.vista-previa-btn:hover{background:#1ebe5b;}
+
+  /* CONTENEDOR */
+  .contenedor{max-width:1000px;margin:auto;padding:24px 16px 120px;}
+  .panel{display:none;}
+  .panel.activo{display:block;animation:aparecer .25s ease;}
+  @keyframes aparecer{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+
+  h2.seccion{
+    font-size:1.4rem;color:var(--azul);margin:6px 0 14px;
+    border-left:5px solid var(--azul-claro);padding-left:10px;
+  }
+  h3.subseccion{
+    font-size:1.05rem;color:var(--azul);margin:18px 0 10px;
+    padding-bottom:6px;border-bottom:1px solid #eef0f5;
+  }
+
+  /* LISTAS */
+  .lista{display:flex;flex-direction:column;gap:12px;}
+  .item{
+    background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.07);
+    padding:14px 16px;display:flex;justify-content:space-between;
+    align-items:center;gap:12px;flex-wrap:wrap;
+    border-left:4px solid var(--azul-claro);
+  }
+  .item .foto{
+    width:64px;height:64px;border-radius:8px;object-fit:cover;
+    background:#eef0f5;flex-shrink:0;
+  }
+  .item .foto.placeholder{
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;color:#aaa;
+  }
+  .item .info{flex:1;min-width:180px;}
+  .item .info strong{color:var(--azul);font-size:.95rem;display:block;}
+  .item .info span{font-size:.82rem;color:#666;display:block;margin-top:2px;}
+  .item .item-acciones{display:flex;gap:6px;flex-wrap:wrap;}
+  .vacio{
+    background:#fff;border-radius:10px;padding:24px;text-align:center;
+    color:#888;font-size:.9rem;box-shadow:0 2px 8px rgba(0,0,0,.07);
+  }
+
+  /* BOTÓN FLOTANTE + */
+  .btn-flotante-add{
+    position:fixed;bottom:22px;right:22px;z-index:120;
+    width:60px;height:60px;border-radius:50%;
+    background:var(--azul);color:#fff;border:none;cursor:pointer;
+    font-size:2rem;line-height:1;font-weight:300;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 24px rgba(11,61,145,.5);transition:.2s;
+  }
+  .btn-flotante-add:hover{transform:scale(1.08);background:var(--azul-claro);}
+
+  /* FORM CARD */
+  .form-card{background:#fff;border-radius:var(--radio);box-shadow:var(--sombra);padding:20px;margin-bottom:18px;}
+  .form-card h3{color:var(--azul);font-size:1.05rem;margin-bottom:12px;}
+  .fila{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  label{display:block;font-size:.82rem;font-weight:600;margin:8px 0 4px;color:#333;}
+  input,select,textarea{
+    width:100%;padding:10px 12px;border:1px solid #d5dbe8;border-radius:8px;
+    font-size:.9rem;font-family:inherit;background:#fff;
+  }
+  textarea{resize:vertical;min-height:80px;}
+
+  .acciones{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
+  .btn{
+    padding:10px 18px;border-radius:30px;border:none;cursor:pointer;
+    font-weight:700;font-size:.88rem;transition:.2s;
+  }
+  .btn-primary{background:var(--azul);color:#fff;}
+  .btn-primary:hover{background:var(--azul-claro);}
+  .btn-success{background:var(--verde-wa);color:#fff;}
+  .btn-success:hover{background:#1ebe5b;}
+  .btn-danger{background:var(--rojo);color:#fff;}
+  .btn-danger:hover{background:#c0392b;}
+  .btn-warning{background:var(--amarillo);color:#fff;}
+  .btn-warning:hover{background:#e67e22;}
+  .btn-gris{background:#e8ecf4;color:#333;}
+  .btn-gris:hover{background:#d8dee9;}
+  .btn-sm{padding:6px 12px;font-size:.78rem;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;}
+
+  /* MODAL */
+  .modal-fondo{
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);
+    z-index:200;align-items:center;justify-content:center;padding:16px;
+  }
+  .modal-fondo.abierto{display:flex;}
+  .modal{
+    background:#fff;border-radius:16px;max-width:600px;width:100%;
+    max-height:90vh;overflow-y:auto;padding:24px;position:relative;
+    animation:aparecer .2s ease;
+  }
+  .modal h3{color:var(--azul);margin-bottom:14px;}
+  .cerrar{
+    position:absolute;top:14px;right:16px;background:none;border:none;
+    font-size:1.5rem;cursor:pointer;color:#888;
+  }
+
+  /* FOTO */
+  .foto-input-wrap{display:flex;align-items:center;gap:12px;margin-top:6px;}
+  .foto-preview{
+    width:70px;height:70px;border-radius:10px;object-fit:cover;
+    background:#eef0f5;border:1px dashed #bcc6d8;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;color:#aaa;flex-shrink:0;overflow:hidden;
+  }
+  .foto-preview img{width:100%;height:100%;object-fit:cover;}
+  .foto-btn{
+    padding:9px 16px;border-radius:30px;border:none;cursor:pointer;
+    background:#e8ecf4;color:#333;font-weight:600;font-size:.85rem;transition:.2s;
+  }
+  .foto-btn:hover{background:#d8dee9;}
+
+  /* TOAST */
+  .toast{
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);
+    background:#333;color:#fff;padding:12px 22px;border-radius:30px;
+    font-size:.88rem;font-weight:600;z-index:400;opacity:0;
+    transition:.35s ease;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.3);
+    max-width:90vw;text-align:center;
+  }
+  .toast.visible{transform:translateX(-50%) translateY(0);opacity:1;}
+  .toast.exito{background:var(--verde-wa);}
+  .toast.error{background:var(--rojo);}
+
+  /* ESTADO DE CONEXIÓN */
+  .estado-conexion{
+    display:flex;align-items:center;gap:8px;justify-content:center;
+    padding:10px;font-size:.82rem;background:#fff;border-bottom:1px solid #eef0f5;
+  }
+  .estado-conexion .dot{width:10px;height:10px;border-radius:50%;background:#ccc;}
+  .estado-conexion .dot.ok{background:var(--verde-wa);}
+  .estado-conexion .dot.error{background:var(--rojo);}
+  .estado-conexion .dot.loading{background:var(--amarillo);animation:pulso 1s infinite;}
+  @keyframes pulso{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+  /* AVISO */
+  .aviso{
+    background:#fff8e1;border-left:4px solid var(--amarillo);
+    padding:12px 16px;border-radius:8px;font-size:.85rem;color:#7a5b00;
+    margin-bottom:18px;
+  }
+  .aviso strong{color:#5a4300;}
+  .aviso-info{background:#eef6ff;border-left-color:var(--azul-claro);color:#334;}
+
+  /* VALIDAR RESERVA */
+  .validador{background:#fff;border-radius:var(--radio);box-shadow:var(--sombra);padding:24px;margin-bottom:18px;}
+  .validador .input-codigo{
+    font-size:1.2rem;font-family:monospace;text-align:center;letter-spacing:2px;
+    padding:14px;text-transform:uppercase;
+  }
+  .resultado-validador{
+    margin-top:18px;padding:16px;border-radius:10px;display:none;
+  }
+  .resultado-validador.visible{display:block;}
+  .resultado-validador.ok{background:#e6ffef;border-left:4px solid var(--verde-wa);}
+  .resultado-validador.err{background:#ffe8e8;border-left:4px solid var(--rojo);}
+  .resultado-validador.warn{background:#fff8e1;border-left:4px solid var(--amarillo);}
+  .resultado-validador h4{color:var(--azul);margin-bottom:8px;}
+  .resultado-validador p{font-size:.88rem;margin:4px 0;color:#444;}
+  .resultado-validador .btn{margin-top:12px;}
+
+  /* RESERVAS LIST */
+  .reserva-item{
+    background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.07);
+    padding:14px 16px;margin-bottom:10px;
+    border-left:4px solid var(--amarillo);
+    display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  }
+  .reserva-item.confirmada{border-left-color:var(--verde-wa);}
+  .reserva-item.cancelada{border-left-color:var(--rojo);}
+  .reserva-item .ri-info{flex:1;min-width:200px;}
+  .reserva-item .ri-codigo{font-family:monospace;font-weight:800;color:var(--azul);font-size:1rem;letter-spacing:1px;}
+  .reserva-item .ri-detalle{font-size:.82rem;color:#666;margin-top:2px;}
+  .reserva-item .ri-badge{padding:4px 10px;border-radius:20px;font-size:.72rem;font-weight:700;}
+  .reserva-item .ri-badge.pendiente{background:#fff5e0;color:#a86f00;}
+  .reserva-item .ri-badge.confirmada{background:#e6ffef;color:#1a9c48;}
+  .reserva-item .ri-badge.cancelada{background:#ffe8e8;color:#c0392b;}
+
+  /* LOGO PREVIEW */
+  .logo-preview{
+    width:100px;height:100px;border-radius:12px;background:#eef0f5;
+    display:flex;align-items:center;justify-content:center;
+    font-size:3rem;color:#bcc6d8;overflow:hidden;margin-bottom:10px;
+    border:1px dashed #bcc6d8;
+  }
+  .logo-preview img{width:100%;height:100%;object-fit:contain;}
+
+  /* ESTADÍSTICAS */
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px;}
+  .stat-card{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.07);padding:16px;text-align:center;}
+  .stat-card .num{font-size:1.6rem;font-weight:800;color:var(--azul);}
+  .stat-card .lbl{font-size:.78rem;color:#666;margin-top:4px;}
+
+  @media(max-width:600px){
+    header.admin-header h1{font-size:1.3rem;}
+    .fila{grid-template-columns:1fr;}
+    .tabs button{padding:8px 10px;font-size:.75rem;}
+  }
+</style>
+</head>
+<body>
+
+<div id="adminApp">
+  <header class="admin-header">
+    <h1>⚙️ Panel de Administración</h1>
+    <p>Viajes Perdomo — Conectado a GitHub</p>
+  </header>
+
+  <div class="estado-conexion" id="estadoConexion">
+    <span class="dot" id="dotEstado"></span>
+    <span id="textoEstado">Configura tu token de GitHub para empezar</span>
+  </div>
+
+  <div class="tabs">
+    <button data-tab="guaguas" class="activo" onclick="cambiarTab('guaguas', this)">🚌 Guaguas</button>
+    <button data-tab="rutas" onclick="cambiarTab('rutas', this)">🗺️ Rutas</button>
+    <button data-tab="splash" onclick="cambiarTab('splash', this)">✨ Splash</button>
+    <button data-tab="reservas" onclick="cambiarTab('reservas', this)">🎫 Reservas</button>
+    <button data-tab="testimonios" onclick="cambiarTab('testimonios', this)">⭐ Testimonios</button>
+    <button data-tab="faqs" onclick="cambiarTab('faqs', this)">❓ FAQs</button>
+    <button data-tab="nosotros" onclick="cambiarTab('nosotros', this)">👥 Nosotros</button>
+    <button data-tab="legal" onclick="cambiarTab('legal', this)">📄 Legal</button>
+    <button data-tab="sitio" onclick="cambiarTab('sitio', this)">📝 Textos</button>
+    <button data-tab="config" onclick="cambiarTab('config', this)">🔑 GitHub</button>
+    <button class="vista-previa-btn" onclick="abrirVistaPrevia()">👁️ Vista previa</button>
+  </div>
+
+  <div class="contenedor">
+
+    <!-- ============ PANEL GUAGUAS ============ -->
+    <section class="panel activo" id="panel-guaguas">
+      <h2 class="seccion">Guaguas</h2>
+      <div class="lista" id="listaGuaguas"></div>
+    </section>
+
+    <!-- ============ PANEL RUTAS ============ -->
+    <section class="panel" id="panel-rutas">
+      <h2 class="seccion">Rutas</h2>
+      <div class="lista" id="listaRutas"></div>
+    </section>
+
+    <!-- ============ PANEL SPLASH ============ -->
+    <section class="panel" id="panel-splash">
+      <h2 class="seccion">Tarjetas del Splash</h2>
+      <div class="aviso">Estas tarjetas publicitarias se deslizan en 3D durante la pantalla de carga.</div>
+      <div id="listaSplash"></div>
+    </section>
+
+    <!-- ============ PANEL RESERVAS (VALIDAR) ============ -->
+    <section class="panel" id="panel-reservas">
+      <h2 class="seccion">Validar Reserva</h2>
+      <p style="font-size:.88rem;color:#666;margin-bottom:14px;">Pega el código que te envió el cliente por WhatsApp para confirmar su asiento.</p>
+
+      <div class="validador">
+        <label style="font-size:.95rem;margin-bottom:8px;">Código de reserva</label>
+        <input id="inputCodigo" class="input-codigo" placeholder="VP-XXXXXX" maxlength="12">
+        <div class="acciones">
+          <button class="btn btn-primary" onclick="validarReserva()">🔍 Validar código</button>
+          <button class="btn btn-gris" onclick="limpiarValidador()">Limpiar</button>
+        </div>
+        <div class="resultado-validador" id="resultadoValidador"></div>
+      </div>
+
+      <h3 class="subseccion">Todas las reservas</h3>
+      <div id="listaReservasAdmin"></div>
+    </section>
+
+    <!-- ============ PANEL TESTIMONIOS ============ -->
+    <section class="panel" id="panel-testimonios">
+      <h2 class="seccion">Testimonios</h2>
+      <div class="aviso aviso-info">Los testimonios que aparecen en la página principal.</div>
+      <div class="lista" id="listaTestimonios"></div>
+    </section>
+
+    <!-- ============ PANEL FAQs ============ -->
+    <section class="panel" id="panel-faqs">
+      <h2 class="seccion">Preguntas Frecuentes</h2>
+      <div class="lista" id="listaFaqs"></div>
+    </section>
+
+    <!-- ============ PANEL NOSOTROS ============ -->
+    <section class="panel" id="panel-nosotros">
+      <h2 class="seccion">Quiénes somos</h2>
+
+      <div class="form-card">
+        <h3>📸 Logo de la agencia (3.4)</h3>
+        <div class="aviso aviso-info">Sube tu logo real. Se usará en el splash, header y favicon de la PWA.</div>
+        <div class="logo-preview" id="logoPreview">🚐</div>
+        <div class="acciones">
+          <button class="btn btn-primary" onclick="document.getElementById('logoInput').click()">📷 Subir logo</button>
+          <button class="btn btn-danger" onclick="quitarLogo()">🗑️ Quitar logo</button>
+          <input type="file" id="logoInput" accept="image/*" style="display:none" onchange="onLogoSelect(this)">
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h3>📝 Texto de "Quiénes somos"</h3>
+        <label>Texto principal</label>
+        <textarea id="cfgNosotrosTexto" placeholder="Cuenta la historia de Viajes Perdomo..."></textarea>
+        <label>Foto (opcional)</label>
+        <div class="foto-input-wrap">
+          <div class="foto-preview" id="nosotrosFotoPreview"></div>
+          <button class="foto-btn" type="button" onclick="document.getElementById('nosotrosFotoInput').click()">📷 Elegir foto</button>
+          <input type="file" id="nosotrosFotoInput" accept="image/*" style="display:none" onchange="onNosotrosFoto(this)">
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h3>📊 Estadísticas</h3>
+        <div class="fila">
+          <div><label>Número 1</label><input id="cfgStat1Num" placeholder="+500"></div>
+          <div><label>Etiqueta 1</label><input id="cfgStat1Lbl" placeholder="Viajes realizados"></div>
+        </div>
+        <div class="fila">
+          <div><label>Número 2</label><input id="cfgStat2Num" placeholder="+1.200"></div>
+          <div><label>Etiqueta 2</label><input id="cfgStat2Lbl" placeholder="Clientes felices"></div>
+        </div>
+        <div class="fila">
+          <div><label>Número 3</label><input id="cfgStat3Num" placeholder="5 años"></div>
+          <div><label>Etiqueta 3</label><input id="cfgStat3Lbl" placeholder="De experiencia"></div>
+        </div>
+      </div>
+
+      <div class="acciones">
+        <button class="btn btn-success" onclick="guardarNosotros()">💾 Guardar "Quiénes somos"</button>
+      </div>
+    </section>
+
+    <!-- ============ PANEL LEGAL ============ -->
+    <section class="panel" id="panel-legal">
+      <h2 class="seccion">Legal y confianza</h2>
+
+      <div class="form-card">
+        <h3>🔒 Aviso de privacidad (6.1)</h3>
+        <textarea id="cfgPrivacidad" placeholder="Texto de privacidad..."></textarea>
+      </div>
+
+      <div class="form-card">
+        <h3>📄 Términos y condiciones (6.2)</h3>
+        <textarea id="cfgTerminos" placeholder="Texto de términos..."></textarea>
+      </div>
+
+      <div class="form-card">
+        <h3>🚫 Política de cancelación (5.2)</h3>
+        <textarea id="cfgPoliticaCancelacion" placeholder="Texto de política de cancelación..."></textarea>
+      </div>
+
+      <div class="form-card">
+        <h3>✅ Sellos de confianza (6.3)</h3>
+        <label>Un sello por línea</label>
+        <textarea id="cfgSellos" placeholder="✅ Sin pago online&#10;🔒 Datos protegidos&#10;🎫 Reserva sin riesgo"></textarea>
+      </div>
+
+      <div class="acciones">
+        <button class="btn btn-success" onclick="guardarLegal()">💾 Guardar todo lo legal</button>
+      </div>
+    </section>
+
+    <!-- ============ PANEL SITIO ============ -->
+    <section class="panel" id="panel-sitio">
+      <h2 class="seccion">Textos del sitio</h2>
+
+      <div class="form-card">
+        <h3>📱 WhatsApp</h3>
+        <label>Número de WhatsApp (sin +, sin espacios) *</label>
+        <input id="cfgWhatsapp" placeholder="5350053909">
+        <p style="font-size:.8rem;color:#888;margin-top:6px;">Ejemplo: <code>5350053909</code> para +53 5 0053909</p>
+      </div>
+
+      <div class="form-card">
+        <h3>🏠 Header y Hero</h3>
+        <label>Nombre de la agencia</label>
+        <input id="cfgHeaderNombre" placeholder="Viajes Perdomo">
+        <label>Icono del header (emoji, si no hay logo real)</label>
+        <input id="cfgHeaderLogo" placeholder="🚐">
+        <label>Subtítulo del header</label>
+        <input id="cfgHeaderSub" placeholder="Guaguas, rutas y reservas directas por WhatsApp">
+        <label>Título del hero</label>
+        <input id="cfgHeroTitulo" placeholder="Bienvenido a Viajes Perdomo">
+        <label>Texto del hero</label>
+        <textarea id="cfgHeroTexto"></textarea>
+        <label>Texto del slogan del splash</label>
+        <input id="cfgSplashSlogan" placeholder="Tu viaje, nuestra pasión">
+      </div>
+
+      <div class="form-card">
+        <h3>ℹ️ Tarjetas informativas de Inicio</h3>
+        <div class="fila">
+          <div><label>Icono 1</label><input id="cfgInfo1Icono" placeholder="🚌"></div>
+          <div><label>Título 1</label><input id="cfgInfo1Titulo" placeholder="Flota moderna"></div>
+        </div>
+        <label>Texto 1</label>
+        <input id="cfgInfo1Texto" placeholder="Guaguas con aire acondicionado, WiFi y asientos cómodos.">
+        <hr style="margin:14px 0;border:none;border-top:1px solid #eee;">
+        <div class="fila">
+          <div><label>Icono 2</label><input id="cfgInfo2Icono" placeholder="🕒"></div>
+          <div><label>Título 2</label><input id="cfgInfo2Titulo" placeholder="Horarios flexibles"></div>
+        </div>
+        <label>Texto 2</label>
+        <input id="cfgInfo2Texto" placeholder="Salidas diarias hacia los destinos más populares.">
+        <hr style="margin:14px 0;border:none;border-top:1px solid #eee;">
+        <div class="fila">
+          <div><label>Icono 3</label><input id="cfgInfo3Icono" placeholder="📱"></div>
+          <div><label>Título 3</label><input id="cfgInfo3Titulo" placeholder="Reserva directa"></div>
+        </div>
+        <label>Texto 3</label>
+        <input id="cfgInfo3Texto" placeholder="Sin intermediarios: tu reserva llega directo a nuestro WhatsApp.">
+      </div>
+
+      <div class="acciones">
+        <button class="btn btn-success" onclick="guardarConfig()">💾 Guardar todos los textos</button>
+      </div>
+    </section>
+
+    <!-- ============ PANEL CONFIGURACIÓN GITHUB ============ -->
+    <section class="panel" id="panel-config">
+      <h2 class="seccion">Conexión con GitHub</h2>
+
+      <div class="aviso">
+        <strong>🔐 Seguridad:</strong> Usa un <strong>Fine-grained token</strong> limitado <strong>solo a este repositorio</strong> y con permiso <strong>"Contents: Read and write"</strong>. El token se guarda en tu navegador (localStorage) y nunca se sube a GitHub.
+      </div>
+
+      <div class="form-card">
+        <h3>🔑 Token de GitHub</h3>
+        <label>Fine-grained Personal Access Token *</label>
+        <input id="ghToken" type="password" placeholder="github_pat_...">
+        <p style="font-size:.8rem;color:#888;margin-top:6px;">
+          Créalo en: GitHub → Settings → Developer settings → Fine-grained tokens → Generate new token.<br>
+          Permisos: <strong>Repository access → Only select repositories</strong> (tu repo) → <strong>Permissions → Contents → Read and write</strong>.
+        </p>
+      </div>
+
+      <div class="form-card">
+        <h3>📦 Repositorio</h3>
+        <div class="fila">
+          <div><label>Usuario / Organización *</label><input id="ghOwner" placeholder="tu-usuario"></div>
+          <div><label>Nombre del repositorio *</label><input id="ghRepo" placeholder="viajes-perdomo"></div>
+        </div>
+        <div class="fila">
+          <div><label>Rama</label><input id="ghBranch" placeholder="main" value="main"></div>
+          <div><label>Ruta del archivo</label><input id="ghPath" placeholder="datos.json" value="datos.json"></div>
+        </div>
+      </div>
+
+      <div class="acciones">
+        <button class="btn btn-primary" onclick="guardarConfigGitHub()">💾 Guardar configuración</button>
+        <button class="btn btn-success" onclick="probarConexion()">🔗 Probar conexión</button>
+        <button class="btn btn-danger" onclick="borrarConfigGitHub()">🗑️ Borrar configuración</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- BOTÓN FLOTANTE + -->
+  <button class="btn-flotante-add" id="btnAddFlotante" onclick="abrirAddActual()" title="Agregar nuevo">+</button>
+</div>
+
+<!-- MODAL -->
+<div class="modal-fondo" id="modalForm">
+  <div class="modal">
+    <button class="cerrar" onclick="cerrarModalForm()">✕</button>
+    <div id="modalFormContenido"></div>
+  </div>
+</div>
+
+<!-- VISTA PREVIA -->
+<div id="vistaPrevia" style="display:none;position:fixed;inset:0;z-index:500;background:#f4f6fb;overflow-y:auto;">
+  <div style="position:sticky;top:0;z-index:10;background:#111;color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:.85rem;">
+    <div><span style="background:#25D366;color:#fff;padding:4px 12px;border-radius:30px;font-weight:700;font-size:.78rem;">👁️ Vista previa</span></div>
+    <button style="background:#fff;color:#111;border:none;padding:8px 16px;border-radius:30px;font-weight:700;font-size:.82rem;cursor:pointer;" onclick="cerrarVistaPrevia()">✕ Salir</button>
+  </div>
+  <div id="vistaPreviaContenido"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   DATOS POR DEFECTO (debe coincidir con datos.json)
+   ============================================================ */
+const DEFAULT_DATA = {
+  config: {
+    whatsapp: "5350053909",
+    headerNombre: "Viajes Perdomo",
+    headerLogo: "🚐",
+    logoUrl: "",
+    headerSub: "Guaguas, rutas y reservas directas por WhatsApp",
+    heroTitulo: "Bienvenido a Viajes Perdomo",
+    heroTexto: "Tu transporte cómodo, seguro y directo. Reserva en segundos tocando el botón verde y completa el formulario.",
+    splashSlogan: "Tu viaje, nuestra pasión",
+    info1Icono: "🚌", info1Titulo: "Flota moderna", info1Texto: "Guaguas con aire acondicionado, WiFi y asientos cómodos.",
+    info2Icono: "🕒", info2Titulo: "Horarios flexibles", info2Texto: "Salidas diarias hacia los destinos más populares.",
+    info3Icono: "📱", info3Titulo: "Reserva directa", info3Texto: "Sin intermediarios: tu reserva llega directo a nuestro WhatsApp.",
+    nosotrosTexto: "Viajes Perdomo nació con la idea de ofrecer un transporte cómodo, seguro y confiable para quienes quieren descubrir Cuba sin complicaciones. Llevamos años conectando viajeros con los destinos más hermosos del país, con guaguas modernas y conductores profesionales que conocen cada ruta.",
+    nosotrosFoto: "",
+    nosotrosStats: [
+      { num: "+500", lbl: "Viajes realizados" },
+      { num: "+1.200", lbl: "Clientes felices" },
+      { num: "5 años", lbl: "De experiencia" }
+    ],
+    politicaCancelacion: "Puedes cancelar tu reserva sin coste hasta 24 horas antes de la salida. Si cancelas con menos tiempo, se aplicará un cargo del 50%. Para cancelar, escríbenos por WhatsApp con tu código de reserva.",
+    privacidad: "En Viajes Perdomo solo recogemos los datos necesarios para gestionar tu reserva: nombre, teléfono, ruta y asientos. Tus datos no se comparten con terceros y se eliminan cuando ya no son necesarios. Puedes solicitar su eliminación escribiéndonos por WhatsApp.",
+    terminos: "<p>Al reservar con Viajes Perdomo aceptas las siguientes condiciones:</p><ul><li>La reserva queda pendiente hasta que el gestor confirme el asiento por WhatsApp.</li><li>El pago se realiza al abordar la guagua, salvo acuerdo previo.</li><li>Debes llegar 15 minutos antes de la salida.</li><li>Cada pasajero puede llevar una maleta grande y una de mano sin coste.</li><li>Los menores de 5 años viajan gratis en brazos; de 5 a 12 años tienen 50% de descuento.</li></ul>",
+    sellos: ["✅ Sin pago online", "🔒 Datos protegidos", "🎫 Reserva sin riesgo", "🛡️ Cancelación flexible"]
+  },
+  guaguas: [
+    { id: 1, icono: "🚌", nombre: "Guagua Toyota Coaster", capacidad: "30 pasajeros", descripcion: "Aire acondicionado, asientos reclinables y WiFi.", foto: "" },
+    { id: 2, icono: "🚐", nombre: "Minibús Hyundai", capacidad: "20 pasajeros", descripcion: "Ideal para rutas cortas. Música y cargadores USB.", foto: "" },
+    { id: 3, icono: "🚍", nombre: "Autobús Yutong", capacidad: "45 pasajeros", descripcion: "Amplio equipaje, aire acondicionado y pantallas.", foto: "" }
+  ],
+  rutas: [
+    { id: 1, ruta: "La Habana → Varadero", salida: "Terminal Central", horario: "8:00 AM / 2:00 PM", precio: "$25 USD", capacidad: 20, foto: "" },
+    { id: 2, ruta: "La Habana → Viñales", salida: "Terminal Central", horario: "7:00 AM", precio: "$30 USD", capacidad: 20, foto: "" },
+    { id: 3, ruta: "Varadero → La Habana", salida: "Hotel Parque Central", horario: "10:00 AM / 4:00 PM", precio: "$25 USD", capacidad: 20, foto: "" },
+    { id: 4, ruta: "La Habana → Trinidad", salida: "Terminal Central", horario: "6:30 AM", precio: "$35 USD", capacidad: 20, foto: "" },
+    { id: 5, ruta: "Trinidad → La Habana", salida: "Terminal Trinidad", horario: "9:00 AM", precio: "$35 USD", capacidad: 20, foto: "" }
+  ],
+  cardsSplash: [
+    { id: 1, icono: "🚐", titulo: "Flota moderna", texto: "Guaguas cómodas con aire acondicionado y WiFi." },
+    { id: 2, icono: "🛡️", titulo: "Viajes seguros", texto: "Conductores profesionales y vehículos revisados." },
+    { id: 3, icono: "💰", titulo: "Mejores precios", texto: "Tarifas accesibles sin intermediarios." },
+    { id: 4, icono: "📍", titulo: "Rutas populares", texto: "La Habana, Varadero, Viñales, Trinidad y más." },
+    { id: 5, icono: "📱", titulo: "Reserva fácil", texto: "Reserva en segundos directo a nuestro WhatsApp." },
+    { id: 6, icono: "🕒", titulo: "Salidas diarias", texto: "Horarios flexibles que se adaptan a ti." }
+  ],
+  testimonios: [
+    { id: 1, texto: "Excelente servicio, la guagua muy cómoda y el chofer muy amable.", autor: "María G.", estrellas: 5, fecha: "Marzo 2025" },
+    { id: 2, texto: "Reservé por WhatsApp y todo fue rapidísimo. Recomendado.", autor: "Carlos P.", estrellas: 5, fecha: "Febrero 2025" },
+    { id: 3, texto: "Viajé a Varadero con mi familia y todo perfecto.", autor: "Ana L.", estrellas: 4, fecha: "Enero 2025" }
+  ],
+  faqs: [
+    { id: 1, pregunta: "¿Cómo reservo mi asiento?", respuesta: "Toca el botón Reservar, elige tu ruta, fecha y asiento, y envía el código por WhatsApp. El gestor te confirmará." },
+    { id: 2, pregunta: "¿Puedo llevar equipaje grande?", respuesta: "Sí, cada pasajero puede llevar una maleta grande y una de mano sin coste extra." },
+    { id: 3, pregunta: "¿Hay descuento para niños?", respuesta: "Los menores de 5 años viajan gratis si van en brazos. De 5 a 12 años tienen 50% de descuento." },
+    { id: 4, pregunta: "¿Qué pasa si llueve?", respuesta: "Las salidas se mantienen salvo condiciones extremas. En ese caso te avisamos y reprogramamos." },
+    { id: 5, pregunta: "¿Puedo cancelar mi reserva?", respuesta: "Sí, puedes cancelar sin coste hasta 24 horas antes de la salida." }
+  ],
+  reservas: []
+};
+
+/* ============================================================
+   ESTADO
+   ============================================================ */
+let DATA = null;
+let tabActual = "guaguas";
+let editando = { tipo: null, id: null };
+let fotoTemporal = "";
+let logoBase64 = "";
+let nosotrosFotoBase64 = "";
+let ghConfig = null;
+let fileSha = null;
+
+/* ============================================================
+   GITHUB CONFIG
+   ============================================================ */
+function cargarConfigGitHub(){
+  try{
+    const c = localStorage.getItem("vp_gh_config");
+    if(c){
+      ghConfig = JSON.parse(c);
+      document.getElementById("ghToken").value = ghConfig.token || "";
+      document.getElementById("ghOwner").value = ghConfig.owner || "";
+      document.getElementById("ghRepo").value = ghConfig.repo || "";
+      document.getElementById("ghBranch").value = ghConfig.branch || "main";
+      document.getElementById("ghPath").value = ghConfig.path || "datos.json";
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+
+function guardarConfigGitHub(){
+  const token = document.getElementById("ghToken").value.trim();
+  const owner = document.getElementById("ghOwner").value.trim();
+  const repo = document.getElementById("ghRepo").value.trim();
+  const branch = document.getElementById("ghBranch").value.trim() || "main";
+  const path = document.getElementById("ghPath").value.trim() || "datos.json";
+  if(!token || !owner || !repo){
+    mostrarToast("Completa token, usuario y repositorio", "error");
+    return;
+  }
+  ghConfig = { token, owner, repo, branch, path };
+  localStorage.setItem("vp_gh_config", JSON.stringify(ghConfig));
+  mostrarToast("Configuración de GitHub guardada");
+  actualizarEstadoConexion("ok", "Configuración guardada. Pulsa 'Probar conexión'.");
+}
+
+function borrarConfigGitHub(){
+  if(!confirm("¿Borrar la configuración de GitHub? El token se eliminará de tu navegador.")) return;
+  localStorage.removeItem("vp_gh_config");
+  ghConfig = null;
+  fileSha = null;
+  document.getElementById("ghToken").value = "";
+  document.getElementById("ghOwner").value = "";
+  document.getElementById("ghRepo").value = "";
+  document.getElementById("ghBranch").value = "main";
+  document.getElementById("ghPath").value = "datos.json";
+  mostrarToast("Configuración borrada");
+  actualizarEstadoConexion("", "Configura tu token de GitHub para empezar");
+}
+
+function actualizarEstadoConexion(estado, texto){
+  const dot = document.getElementById("dotEstado");
+  const txt = document.getElementById("textoEstado");
+  dot.className = "dot" + (estado ? " " + estado : "");
+  txt.textContent = texto;
+}
+
+async function probarConexion(){
+  if(!ghConfig){
+    if(!cargarConfigGitHub() || !ghConfig){
+      mostrarToast("Primero guarda la configuración de GitHub", "error");
+      return;
+    }
+  }
+  actualizarEstadoConexion("loading", "Conectando con GitHub...");
+  try{
+    const resultado = await leerDatosDeGitHub();
+    if(resultado){
+      mostrarToast("✅ Conexión exitosa. Datos cargados.");
+      actualizarEstadoConexion("ok", "Conectado a " + ghConfig.owner + "/" + ghConfig.repo);
+    }else{
+      mostrarToast("⚠️ No se encontró el archivo. Se creará al guardar.");
+      actualizarEstadoConexion("ok", "Conectado (archivo se creará al guardar)");
+    }
+  }catch(e){
+    mostrarToast("❌ Error: " + e.message, "error");
+    actualizarEstadoConexion("error", "Error: " + e.message);
+  }
+}
+
+async function leerDatosDeGitHub(){
+  if(!ghConfig) return false;
+  try{
+    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}?ref=${ghConfig.branch}`;
+    const resp = await fetch(url, {
+      headers: {
+        "Authorization": `Bearer ${ghConfig.token}`,
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28"
+      }
+    });
+    if(resp.status === 404){
+      fileSha = null;
+      DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      renderTodo();
+      return false;
+    }
+    if(!resp.ok){
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.message || "HTTP " + resp.status);
+    }
+    const json = await resp.json();
+    fileSha = json.sha;
+    const contenido = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ""))));
+    DATA = JSON.parse(contenido);
+    // Asegurar campos nuevos
+    if(!DATA.testimonios) DATA.testimonios = [];
+    if(!DATA.faqs) DATA.faqs = [];
+    if(!DATA.reservas) DATA.reservas = [];
+    if(!DATA.config.nosotrosStats) DATA.config.nosotrosStats = DEFAULT_DATA.config.nosotrosStats;
+    if(!DATA.config.sellos) DATA.config.sellos = DEFAULT_DATA.config.sellos;
+    renderTodo();
+    return true;
+  }catch(e){
+    console.warn("Error leyendo de GitHub:", e);
+    throw e;
+  }
+}
+
+async function guardarEnGitHub(){
+  if(!ghConfig){
+    if(!cargarConfigGitHub() || !ghConfig){
+      mostrarToast("Configura GitHub en la pestaña 🔑", "error");
+      return false;
+    }
+  }
+  actualizarEstadoConexion("loading", "Guardando en GitHub...");
+  try{
+    let sha = fileSha;
+    if(!sha){
+      try{
+        const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}?ref=${ghConfig.branch}`;
+        const resp = await fetch(url, {headers: {"Authorization": `Bearer ${ghConfig.token}`, "Accept": "application/vnd.github+json"}});
+        if(resp.ok){ const j = await resp.json(); sha = j.sha; }
+      }catch(e){}
+    }
+    const contenido = JSON.stringify(DATA, null, 2);
+    const base64 = btoa(unescape(encodeURIComponent(contenido)));
+    const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${ghConfig.path}`;
+    const body = { message: "Actualizar datos.json desde el panel de administración", content: base64, branch: ghConfig.branch };
+    if(sha) body.sha = sha;
+    const resp = await fetch(url, {
+      method: "PUT",
+      headers: {"Authorization": `Bearer ${ghConfig.token}`, "Accept": "application/vnd.github+json", "Content-Type": "application/json", "X-GitHub-Api-Version": "2022-11-28"},
+      body: JSON.stringify(body)
+    });
+    if(!resp.ok){
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.message || "HTTP " + resp.status);
+    }
+    const resultado = await resp.json();
+    fileSha = resultado.content.sha;
+    actualizarEstadoConexion("ok", "Guardado en GitHub: " + new Date().toLocaleTimeString());
+    mostrarToast("✅ Cambios guardados en GitHub");
+    return true;
+  }catch(e){
+    console.error("Error guardando en GitHub:", e);
+    actualizarEstadoConexion("error", "Error al guardar: " + e.message);
+    mostrarToast("❌ Error guardando: " + e.message, "error");
+    return false;
+  }
+}
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function nuevoId(lista){ return lista.length ? Math.max(...lista.map(x => x.id)) + 1 : 1; }
+function mostrarToast(msg, tipo = "exito"){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast visible " + tipo;
+  setTimeout(() => t.classList.remove("visible"), 3000);
+}
+function escaparHTML(s){
+  return String(s || "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+function cambiarTab(nombre, boton){
+  tabActual = nombre;
+  document.querySelectorAll(".panel").forEach(p => p.classList.remove("activo"));
+  const panel = document.getElementById("panel-" + nombre);
+  if(panel) panel.classList.add("activo");
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("activo"));
+  if(boton) boton.classList.add("activo");
+
+  const btnAdd = document.getElementById("btnAddFlotante");
+  const tabsConAdd = ["guaguas","rutas","splash","testimonios","faqs"];
+  btnAdd.style.display = tabsConAdd.includes(nombre) ? "flex" : "none";
+
+  if(nombre === "sitio") cargarConfigForm();
+  if(nombre === "config") cargarConfigGitHub();
+  if(nombre === "nosotros") cargarNosotrosForm();
+  if(nombre === "legal") cargarLegalForm();
+  if(nombre === "reservas") renderReservasAdmin();
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+/* ============================================================
+   RENDER LISTAS
+   ============================================================ */
+function renderGuaguas(){
+  const cont = document.getElementById("listaGuaguas");
+  if(!DATA || !DATA.guaguas || !DATA.guaguas.length){
+    cont.innerHTML = `<div class="vacio">No hay guaguas. Pulsa el botón <strong>+</strong> para agregar una.</div>`;
+    return;
+  }
+  cont.innerHTML = DATA.guaguas.map(g => `
+    <div class="item">
+      ${g.foto ? `<img class="foto" src="${g.foto}" alt="${escaparHTML(g.nombre)}">` : `<div class="foto placeholder">${g.icono || "🚌"}</div>`}
+      <div class="info">
+        <strong>${g.icono || "🚌"} ${escaparHTML(g.nombre)}</strong>
+        <span>👥 ${escaparHTML(g.capacidad)}</span>
+        ${g.descripcion ? `<span>${escaparHTML(g.descripcion)}</span>` : ""}
+      </div>
+      <div class="item-acciones">
+        <button class="btn btn-gris btn-sm" onclick="abrirEditar('guagua', ${g.id})">✏️ Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="eliminarItem('guagua', ${g.id})">🗑️</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderRutas(){
+  const cont = document.getElementById("listaRutas");
+  if(!DATA || !DATA.rutas || !DATA.rutas.length){
+    cont.innerHTML = `<div class="vacio">No hay rutas. Pulsa el botón <strong>+</strong> para agregar una.</div>`;
+    return;
+  }
+  cont.innerHTML = DATA.rutas.map(r => `
+    <div class="item">
+      ${r.foto ? `<img class="foto" src="${r.foto}" alt="${escaparHTML(r.ruta)}">` : `<div class="foto placeholder">🗺️</div>`}
+      <div class="info">
+        <strong>${escaparHTML(r.ruta)}</strong>
+        <span>📍 Salida: ${escaparHTML(r.salida)}</span>
+        <span>🕒 ${escaparHTML(r.horario)} — 💰 ${escaparHTML(r.precio)} — 🪑 ${r.capacidad || 20} asientos</span>
+      </div>
+      <div class="item-acciones">
+        <button class="btn btn-gris btn-sm" onclick="abrirEditar('ruta', ${r.id})">✏️ Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="eliminarItem('ruta', ${r.id})">🗑️</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderSplash(){
+  const cont = document.getElementById("listaSplash");
+  if(!DATA || !DATA.cardsSplash || !DATA.cardsSplash.length){
+    cont.innerHTML = `<div class="vacio">No hay tarjetas. Pulsa el botón <strong>+</strong> para agregar una.</div>`;
+    return;
+  }
+  cont.innerHTML = DATA.cardsSplash.map(c => `
+    <div class="item" style="background:linear-gradient(135deg,var(--azul),var(--azul-claro));color:#fff;border-left-color:#fff;">
+      <div style="font-size:1.8rem;">${c.icono || "✨"}</div>
+      <div class="info" style="flex:1;">
+        <strong style="color:#fff;">${escaparHTML(c.titulo)}</strong>
+        <span style="color:rgba(255,255,255,.9);">${escaparHTML(c.texto)}</span>
+      </div>
+      <div class="item-acciones">
+        <button class="btn btn-gris btn-sm" onclick="abrirEditar('splash', ${c.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="eliminarItem('splash', ${c.id})">🗑️</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderTestimonios(){
+  const cont = document.getElementById("listaTestimonios");
+  if(!DATA.testimonios || !DATA.testimonios.length){
+    cont.innerHTML = `<div class="vacio">No hay testimonios. Pulsa el botón <strong>+</strong> para agregar uno.</div>`;
+    return;
+  }
+  cont.innerHTML = DATA.testimonios.map(t => `
+    <div class="item">
+      <div class="info" style="flex:1;">
+        <strong>${"★".repeat(t.estrellas || 5)} ${escaparHTML(t.autor)}</strong>
+        <span>"${escaparHTML(t.texto)}"</span>
+        ${t.fecha ? `<span style="font-size:.75rem;">${escaparHTML(t.fecha)}</span>` : ""}
+      </div>
+      <div class="item-acciones">
+        <button class="btn btn-gris btn-sm" onclick="abrirEditar('testimonio', ${t.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="eliminarItem('testimonio', ${t.id})">🗑️</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderFaqs(){
+  const cont = document.getElementById("listaFaqs");
+  if(!DATA.faqs || !DATA.faqs.length){
+    cont.innerHTML = `<div class="vacio">No hay preguntas. Pulsa el botón <strong>+</strong> para agregar una.</div>`;
+    return;
+  }
+  cont.innerHTML = DATA.faqs.map(f => `
+    <div class="item">
+      <div class="info" style="flex:1;">
+        <strong>❓ ${escaparHTML(f.pregunta)}</strong>
+        <span>${escaparHTML(f.respuesta)}</span>
+      </div>
+      <div class="item-acciones">
+        <button class="btn btn-gris btn-sm" onclick="abrirEditar('faq', ${f.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="eliminarItem('faq', ${f.id})">🗑️</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderReservasAdmin(){
+  const cont = document.getElementById("listaReservasAdmin");
+  if(!DATA.reservas || !DATA.reservas.length){
+    cont.innerHTML = `<div class="vacio">No hay reservas registradas todavía.</div>`;
+    return;
+  }
+  cont.innerHTML = DATA.reservas.slice().reverse().map(r => `
+    <div class="reserva-item ${r.estado || 'pendiente'}">
+      <div class="ri-info">
+        <div class="ri-codigo">${r.codigo}</div>
+        <div class="ri-detalle">
+          <strong>${escaparHTML(r.nombre || "")}</strong> · ${escaparHTML(r.ruta || "")} · ${r.fecha || ""} ${r.horario ? "· " + r.horario : ""}<br>
+          Asientos: ${(r.asientos || []).join(", ")} · Tel: ${r.telefono || ""}
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span class="ri-badge ${r.estado || 'pendiente'}">${r.estado === 'confirmada' ? '✅ Confirmada' : (r.estado === 'cancelada' ? '❌ Cancelada' : '⏳ Pendiente')}</span>
+        ${r.estado !== 'confirmada' && r.estado !== 'cancelada' ? `<button class="btn btn-success btn-sm" onclick="confirmarReservaDirecta('${r.codigo}')">✅ Confirmar</button>` : ""}
+        ${r.estado !== 'cancelada' ? `<button class="btn btn-danger btn-sm" onclick="cancelarReservaAdmin('${r.codigo}')">❌ Cancelar</button>` : ""}
+        <button class="btn btn-gris btn-sm" onclick="eliminarReservaAdmin('${r.codigo}')">🗑️</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderTodo(){
+  renderGuaguas();
+  renderRutas();
+  renderSplash();
+  renderTestimonios();
+  renderFaqs();
+  renderReservasAdmin();
+  cargarConfigForm();
+  cargarNosotrosForm();
+  cargarLegalForm();
+  cargarLogoPreview();
+}
+
+/* ============================================================
+   VALIDAR RESERVA
+   ============================================================ */
+function validarReserva(){
+  const codigo = document.getElementById("inputCodigo").value.trim().toUpperCase();
+  const cont = document.getElementById("resultadoValidador");
+  if(!codigo){
+    mostrarToast("Escribe un código", "error");
+    return;
+  }
+  const reserva = (DATA.reservas || []).find(r => r.codigo === codigo);
+  if(!reserva){
+    cont.className = "resultado-validador visible err";
+    cont.innerHTML = `
+      <h4>❌ Reserva no encontrada</h4>
+      <p>El código <strong>${codigo}</strong> no existe en el sistema.</p>
+      <p style="font-size:.8rem;color:#888;">Verifica que el cliente lo haya escrito correctamente.</p>
+    `;
+    return;
+  }
+  const estadoLabel = reserva.estado === "confirmada" ? "✅ Confirmada" : (reserva.estado === "cancelada" ? "❌ Cancelada" : "⏳ Pendiente");
+  const clase = reserva.estado === "confirmada" ? "ok" : (reserva.estado === "cancelada" ? "err" : "warn");
+  cont.className = "resultado-validador visible " + clase;
+  cont.innerHTML = `
+    <h4>${estadoLabel} — ${reserva.codigo}</h4>
+    <p><strong>Nombre:</strong> ${escaparHTML(reserva.nombre || "")}</p>
+    <p><strong>Teléfono:</strong> ${escaparHTML(reserva.telefono || "")}</p>
+    <p><strong>Ruta:</strong> ${escaparHTML(reserva.ruta || "")}</p>
+    <p><strong>Fecha:</strong> ${reserva.fecha || ""} ${reserva.horario ? "· " + reserva.horario : ""}</p>
+    <p><strong>Asientos:</strong> ${(reserva.asientos || []).join(", ")}</p>
+    <p><strong>Pasajeros:</strong> ${reserva.pasajeros || 1}</p>
+    ${reserva.notas ? `<p><strong>Notas:</strong> ${escaparHTML(reserva.notas)}</p>` : ""}
+    ${reserva.estado === "pendiente" ? `
+      <div class="acciones">
+        <button class="btn btn-success" onclick="confirmarReservaDirecta('${reserva.codigo}')">✅ Confirmar reserva</button>
+        <button class="btn btn-danger" onclick="cancelarReservaAdmin('${reserva.codigo}')">❌ Cancelar reserva</button>
+      </div>
+    ` : ""}
+  `;
+}
+
+function limpiarValidador(){
+  document.getElementById("inputCodigo").value = "";
+  document.getElementById("resultadoValidador").className = "resultado-validador";
+  document.getElementById("resultadoValidador").innerHTML = "";
+}
+
+async function confirmarReservaDirecta(codigo){
+  if(!confirm(`¿Confirmar la reserva ${codigo}? Los asientos quedarán ocupados.`)) return;
+  const reserva = (DATA.reservas || []).find(r => r.codigo === codigo);
+  if(!reserva){
+    mostrarToast("Reserva no encontrada", "error");
+    return;
+  }
+  reserva.estado = "confirmada";
+  reserva.confirmada = new Date().toISOString();
+  renderReservasAdmin();
+  renderTodo();
+  await guardarEnGitHub();
+  mostrarToast("✅ Reserva confirmada y asientos ocupados");
+
+  const cont = document.getElementById("resultadoValidador");
+  if(cont && cont.classList.contains("visible")){
+    validarReserva();
+  }
+}
+
+async function cancelarReservaAdmin(codigo){
+  if(!confirm(`¿Cancelar la reserva ${codigo}? Los asientos quedarán libres.`)) return;
+  const reserva = (DATA.reservas || []).find(r => r.codigo === codigo);
+  if(!reserva){
+    mostrarToast("Reserva no encontrada", "error");
+    return;
+  }
+  reserva.estado = "cancelada";
+  reserva.cancelada = new Date().toISOString();
+  renderReservasAdmin();
+  renderTodo();
+  await guardarEnGitHub();
+  mostrarToast("❌ Reserva cancelada y asientos liberados");
+
+  const cont = document.getElementById("resultadoValidador");
+  if(cont && cont.classList.contains("visible")){
+    validarReserva();
+  }
+}
+
+async function eliminarReservaAdmin(codigo){
+  if(!confirm(`¿Eliminar definitivamente la reserva ${codigo}?`)) return;
+  DATA.reservas = (DATA.reservas || []).filter(r => r.codigo !== codigo);
+  renderReservasAdmin();
+  await guardarEnGitHub();
+  mostrarToast("Reserva eliminada");
+}
+
+/* ============================================================
+   BOTÓN FLOTANTE +
+   ============================================================ */
+function abrirAddActual(){
+  if(tabActual === "guaguas") abrirFormGuagua(null);
+  else if(tabActual === "rutas") abrirFormRuta(null);
+  else if(tabActual === "splash") abrirFormSplash(null);
+  else if(tabActual === "testimonios") abrirFormTestimonio(null);
+  else if(tabActual === "faqs") abrirFormFaq(null);
+}
+
+function abrirEditar(tipo, id){
+  if(tipo === "guagua") abrirFormGuagua(id);
+  else if(tipo === "ruta") abrirFormRuta(id);
+  else if(tipo === "splash") abrirFormSplash(id);
+  else if(tipo === "testimonio") abrirFormTestimonio(id);
+  else if(tipo === "faq") abrirFormFaq(id);
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+function abrirModalForm(html){
+  document.getElementById("modalFormContenido").innerHTML = html;
+  document.getElementById("modalForm").classList.add("abierto");
+}
+function cerrarModalForm(){
+  document.getElementById("modalForm").classList.remove("abierto");
+  fotoTemporal = "";
+  editando = { tipo: null, id: null };
+}
+document.getElementById("modalForm").addEventListener("click", e => {
+  if(e.target.id === "modalForm") cerrarModalForm();
+});
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape") cerrarModalForm();
+});
+
+/* ============================================================
+   SUBIR FOTO (redimensiona a 800px)
+   ============================================================ */
+function leerFoto(input, callback, maxSize = 800){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  if(!file.type.startsWith("image/")){
+    mostrarToast("Selecciona un archivo de imagen", "error");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.width, h = img.height;
+      if(w > maxSize || h > maxSize){
+        const ratio = Math.min(maxSize / w, maxSize / h);
+        w = Math.round(w * ratio);
+        h = Math.round(h * ratio);
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+      callback(dataUrl);
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function previewFoto(dataUrl, contenedorId){
+  const cont = document.getElementById(contenedorId);
+  if(!cont) return;
+  if(dataUrl) cont.innerHTML = `<img src="${dataUrl}" alt="Foto">`;
+  else cont.innerHTML = "🖼️";
+}
+
+/* ============================================================
+   FORM GUAGUA
+   ============================================================ */
+function abrirFormGuagua(id){
+  const g = id ? DATA.guaguas.find(x => x.id === id) : null;
+  editando = { tipo: "guagua", id: id || null };
+  fotoTemporal = g ? (g.foto || "") : "";
+  abrirModalForm(`
+    <h3>${g ? "✏️ Editar Guagua" : "➕ Agregar Guagua"}</h3>
+    <div class="fila">
+      <div><label>Nombre / Modelo *</label><input id="fGNombre" placeholder="Ej: Guagua Toyota Coaster" value="${g ? escaparHTML(g.nombre) : ""}"></div>
+      <div><label>Capacidad *</label><input id="fGCapacidad" placeholder="Ej: 30 pasajeros" value="${g ? escaparHTML(g.capacidad) : ""}"></div>
+    </div>
+    <label>Descripción</label>
+    <input id="fGDesc" placeholder="Ej: Aire acondicionado, WiFi..." value="${g ? escaparHTML(g.descripcion) : ""}">
+    <label>Icono (emoji)</label>
+    <input id="fGIcono" placeholder="🚌" value="${g ? escaparHTML(g.icono || "🚌") : "🚌"}">
+    <label>Foto (desde la galería)</label>
+    <div class="foto-input-wrap">
+      <div class="foto-preview" id="fGFotoPreview"></div>
+      <button class="foto-btn" type="button" onclick="document.getElementById('fGFotoInput').click()">📷 Elegir foto</button>
+      ${g && g.foto ? `<button class="foto-btn" type="button" onclick="quitarFotoGuagua()">🗑️ Quitar</button>` : ""}
+      <input type="file" id="fGFotoInput" accept="image/*" style="display:none" onchange="onFotoGuagua(this)">
+    </div>
+    <div class="acciones">
+      <button class="btn btn-primary" onclick="guardarFormGuagua()">💾 Guardar</button>
+      <button class="btn btn-gris" onclick="cerrarModalForm()">Cancelar</button>
+    </div>
+  `);
+  previewFoto(fotoTemporal, "fGFotoPreview");
+}
+function onFotoGuagua(input){ leerFoto(input, d => { fotoTemporal = d; previewFoto(fotoTemporal, "fGFotoPreview"); }); }
+function quitarFotoGuagua(){ fotoTemporal = ""; previewFoto("", "fGFotoPreview"); }
+async function guardarFormGuagua(){
+  const nombre = document.getElementById("fGNombre").value.trim();
+  const capacidad = document.getElementById("fGCapacidad").value.trim();
+  const descripcion = document.getElementById("fGDesc").value.trim();
+  const icono = document.getElementById("fGIcono").value.trim() || "🚌";
+  if(!nombre || !capacidad){ mostrarToast("Completa nombre y capacidad", "error"); return; }
+  if(editando.id){
+    const g = DATA.guaguas.find(x => x.id === editando.id);
+    if(g) Object.assign(g, { nombre, capacidad, descripcion, icono, foto: fotoTemporal });
+  }else{
+    DATA.guaguas.push({ id: nuevoId(DATA.guaguas), nombre, capacidad, descripcion, icono, foto: fotoTemporal });
+  }
+  renderGuaguas();
+  cerrarModalForm();
+  await guardarEnGitHub();
+}
+
+/* ============================================================
+   FORM RUTA
+   ============================================================ */
+function abrirFormRuta(id){
+  const r = id ? DATA.rutas.find(x => x.id === id) : null;
+  editando = { tipo: "ruta", id: id || null };
+  fotoTemporal = r ? (r.foto || "") : "";
+  abrirModalForm(`
+    <h3>${r ? "✏️ Editar Ruta" : "➕ Agregar Ruta"}</h3>
+    <div class="fila">
+      <div><label>Ruta *</label><input id="fRNombre" placeholder="Ej: La Habana → Varadero" value="${r ? escaparHTML(r.ruta) : ""}"></div>
+      <div><label>Salida *</label><input id="fRSalida" placeholder="Ej: Terminal Central" value="${r ? escaparHTML(r.salida) : ""}"></div>
+    </div>
+    <div class="fila">
+      <div><label>Horario *</label><input id="fRHorario" placeholder="Ej: 8:00 AM / 2:00 PM" value="${r ? escaparHTML(r.horario) : ""}"></div>
+      <div><label>Precio *</label><input id="fRPrecio" placeholder="Ej: $25 USD" value="${r ? escaparHTML(r.precio) : ""}"></div>
+    </div>
+    <label>Capacidad de asientos</label>
+    <input id="fRCapacidad" type="number" min="1" value="${r ? (r.capacidad || 20) : 20}">
+    <label>Foto (desde la galería)</label>
+    <div class="foto-input-wrap">
+      <div class="foto-preview" id="fRFotoPreview"></div>
+      <button class="foto-btn" type="button" onclick="document.getElementById('fRFotoInput').click()">📷 Elegir foto</button>
+      ${r && r.foto ? `<button class="foto-btn" type="button" onclick="quitarFotoRuta()">🗑️ Quitar</button>` : ""}
+      <input type="file" id="fRFotoInput" accept="image/*" style="display:none" onchange="onFotoRuta(this)">
+    </div>
+    <div class="acciones">
+      <button class="btn btn-primary" onclick="guardarFormRuta()">💾 Guardar</button>
+      <button class="btn btn-gris" onclick="cerrarModalForm()">Cancelar</button>
+    </div>
+  `);
+  previewFoto(fotoTemporal, "fRFotoPreview");
+}
+function onFotoRuta(input){ leerFoto(input, d => { fotoTemporal = d; previewFoto(fotoTemporal, "fRFotoPreview"); }); }
+function quitarFotoRuta(){ fotoTemporal = ""; previewFoto("", "fRFotoPreview"); }
+async function guardarFormRuta(){
+  const ruta = document.getElementById("fRNombre").value.trim();
+  const salida = document.getElementById("fRSalida").value.trim();
+  const horario = document.getElementById("fRHorario").value.trim();
+  const precio = document.getElementById("fRPrecio").value.trim();
+  const capacidad = Number(document.getElementById("fRCapacidad").value) || 20;
+  if(!ruta || !salida || !horario || !precio){ mostrarToast("Completa todos los campos", "error"); return; }
+  if(editando.id){
+    const r = DATA.rutas.find(x => x.id === editando.id);
+    if(r) Object.assign(r, { ruta, salida, horario, precio, capacidad, foto: fotoTemporal });
+  }else{
+    DATA.rutas.push({ id: nuevoId(DATA.rutas), ruta, salida, horario, precio, capacidad, foto: fotoTemporal });
+  }
+  renderRutas();
+  cerrarModalForm();
+  await guardarEnGitHub();
+}
+
+/* ============================================================
+   FORM SPLASH
+   ============================================================ */
+function abrirFormSplash(id){
+  const c = id ? DATA.cardsSplash.find(x => x.id === id) : null;
+  editando = { tipo: "splash", id: id || null };
+  abrirModalForm(`
+    <h3>${c ? "✏️ Editar Tarjeta" : "➕ Agregar Tarjeta"}</h3>
+    <div class="fila">
+      <div><label>Título *</label><input id="fSTitulo" placeholder="Ej: Flota moderna" value="${c ? escaparHTML(c.titulo) : ""}"></div>
+      <div><label>Icono (emoji) *</label><input id="fSIcono" placeholder="🚐" value="${c ? escaparHTML(c.icono || "🚐") : "🚐"}"></div>
+    </div>
+    <label>Texto *</label>
+    <input id="fSTexto" placeholder="Ej: Guaguas cómodas con aire acondicionado y WiFi." value="${c ? escaparHTML(c.texto) : ""}">
+    <div class="acciones">
+      <button class="btn btn-primary" onclick="guardarFormSplash()">💾 Guardar</button>
+      <button class="btn btn-gris" onclick="cerrarModalForm()">Cancelar</button>
+    </div>
+  `);
+}
+async function guardarFormSplash(){
+  const titulo = document.getElementById("fSTitulo").value.trim();
+  const texto = document.getElementById("fSTexto").value.trim();
+  const icono = document.getElementById("fSIcono").value.trim() || "✨";
+  if(!titulo || !texto){ mostrarToast("Completa título y texto", "error"); return; }
+  if(editando.id){
+    const c = DATA.cardsSplash.find(x => x.id === editando.id);
+    if(c) Object.assign(c, { titulo, texto, icono });
+  }else{
+    DATA.cardsSplash.push({ id: nuevoId(DATA.cardsSplash), icono, titulo, texto });
+  }
+  renderSplash();
+  cerrarModalForm();
+  await guardarEnGitHub();
+}
+
+/* ============================================================
+   FORM TESTIMONIO
+   ============================================================ */
+function abrirFormTestimonio(id){
+  const t = id ? DATA.testimonios.find(x => x.id === id) : null;
+  editando = { tipo: "testimonio", id: id || null };
+  abrirModalForm(`
+    <h3>${t ? "✏️ Editar Testimonio" : "➕ Agregar Testimonio"}</h3>
+    <label>Autor *</label>
+    <input id="fTAutor" placeholder="Ej: María G." value="${t ? escaparHTML(t.autor) : ""}">
+    <label>Texto del testimonio *</label>
+    <textarea id="fTTexto">${t ? escaparHTML(t.texto) : ""}</textarea>
+    <div class="fila">
+      <div><label>Estrellas (1-5)</label><input id="fTEstrellas" type="number" min="1" max="5" value="${t ? (t.estrellas || 5) : 5}"></div>
+      <div><label>Fecha</label><input id="fTFecha" placeholder="Ej: Marzo 2025" value="${t ? escaparHTML(t.fecha || "") : ""}"></div>
+    </div>
+    <div class="acciones">
+      <button class="btn btn-primary" onclick="guardarFormTestimonio()">💾 Guardar</button>
+      <button class="btn btn-gris" onclick="cerrarModalForm()">Cancelar</button>
+    </div>
+  `);
+}
+async function guardarFormTestimonio(){
+  const autor = document.getElementById("fTAutor").value.trim();
+  const texto = document.getElementById("fTTexto").value.trim();
+  const estrellas = Number(document.getElementById("fTEstrellas").value) || 5;
+  const fecha = document.getElementById("fTFecha").value.trim();
+  if(!autor || !texto){ mostrarToast("Completa autor y texto", "error"); return; }
+  if(editando.id){
+    const t = DATA.testimonios.find(x => x.id === editando.id);
+    if(t) Object.assign(t, { autor, texto, estrellas, fecha });
+  }else{
+    DATA.testimonios.push({ id: nuevoId(DATA.testimonios), autor, texto, estrellas, fecha });
+  }
+  renderTestimonios();
+  cerrarModalForm();
+  await guardarEnGitHub();
+}
+
+/* ============================================================
+   FORM FAQ
+   ============================================================ */
+function abrirFormFaq(id){
+  const f = id ? DATA.faqs.find(x => x.id === id) : null;
+  editando = { tipo: "faq", id: id || null };
+  abrirModalForm(`
+    <h3>${f ? "✏️ Editar Pregunta" : "➕ Agregar Pregunta"}</h3>
+    <label>Pregunta *</label>
+    <input id="fFPregunta" placeholder="Ej: ¿Cómo reservo mi asiento?" value="${f ? escaparHTML(f.pregunta) : ""}">
+    <label>Respuesta *</label>
+    <textarea id="fFRespuesta">${f ? escaparHTML(f.respuesta) : ""}</textarea>
+    <div class="acciones">
+      <button class="btn btn-primary" onclick="guardarFormFaq()">💾 Guardar</button>
+      <button class="btn btn-gris" onclick="cerrarModalForm()">Cancelar</button>
+    </div>
+  `);
+}
+async function guardarFormFaq(){
+  const pregunta = document.getElementById("fFPregunta").value.trim();
+  const respuesta = document.getElementById("fFRespuesta").value.trim();
+  if(!pregunta || !respuesta){ mostrarToast("Completa pregunta y respuesta", "error"); return; }
+  if(editando.id){
+    const f = DATA.faqs.find(x => x.id === editando.id);
+    if(f) Object.assign(f, { pregunta, respuesta });
+  }else{
+    DATA.faqs.push({ id: nuevoId(DATA.faqs), pregunta, respuesta });
+  }
+  renderFaqs();
+  cerrarModalForm();
+  await guardarEnGitHub();
+}
+
+/* ============================================================
+   ELIMINAR
+   ============================================================ */
+async function eliminarItem(tipo, id){
+  if(!confirm("¿Eliminar este elemento?")) return;
+  if(tipo === "guagua"){ DATA.guaguas = DATA.guaguas.filter(x => x.id !== id); renderGuaguas(); }
+  else if(tipo === "ruta"){ DATA.rutas = DATA.rutas.filter(x => x.id !== id); renderRutas(); }
+  else if(tipo === "splash"){ DATA.cardsSplash = DATA.cardsSplash.filter(x => x.id !== id); renderSplash(); }
+  else if(tipo === "testimonio"){ DATA.testimonios = DATA.testimonios.filter(x => x.id !== id); renderTestimonios(); }
+  else if(tipo === "faq"){ DATA.faqs = DATA.faqs.filter(x => x.id !== id); renderFaqs(); }
+  await guardarEnGitHub();
+}
+
+/* ============================================================
+   CONFIG SITIO
+   ============================================================ */
+function cargarConfigForm(){
+  if(!DATA) return;
+  const c = DATA.config;
+  const set = (id, v) => { const el = document.getElementById(id); if(el) el.value = v || ""; };
+  set("cfgWhatsapp", c.whatsapp);
+  set("cfgHeaderNombre", c.headerNombre || c.headerTitulo || "");
+  set("cfgHeaderLogo", c.headerLogo);
+  set("cfgHeaderSub", c.headerSub);
+  set("cfgHeroTitulo", c.heroTitulo);
+  set("cfgHeroTexto", c.heroTexto);
+  set("cfgSplashSlogan", c.splashSlogan);
+  set("cfgInfo1Icono", c.info1Icono); set("cfgInfo1Titulo", c.info1Titulo); set("cfgInfo1Texto", c.info1Texto);
+  set("cfgInfo2Icono", c.info2Icono); set("cfgInfo2Titulo", c.info2Titulo); set("cfgInfo2Texto", c.info2Texto);
+  set("cfgInfo3Icono", c.info3Icono); set("cfgInfo3Titulo", c.info3Titulo); set("cfgInfo3Texto", c.info3Texto);
+}
+async function guardarConfig(){
+  const get = id => { const el = document.getElementById(id); return el ? el.value.trim() : ""; };
+  const nuevoNombre = get("cfgHeaderNombre");
+  DATA.config = {
+    ...DATA.config,
+    whatsapp: get("cfgWhatsapp").replace(/[^\d]/g, ""),
+    headerNombre: nuevoNombre,
+    headerTitulo: nuevoNombre,
+    headerLogo: get("cfgHeaderLogo"),
+    headerSub: get("cfgHeaderSub"),
+    heroTitulo: get("cfgHeroTitulo"),
+    heroTexto: get("cfgHeroTexto"),
+    splashSlogan: get("cfgSplashSlogan"),
+    info1Icono: get("cfgInfo1Icono"), info1Titulo: get("cfgInfo1Titulo"), info1Texto: get("cfgInfo1Texto"),
+    info2Icono: get("cfgInfo2Icono"), info2Titulo: get("cfgInfo2Titulo"), info2Texto: get("cfgInfo2Texto"),
+    info3Icono: get("cfgInfo3Icono"), info3Titulo: get("cfgInfo3Titulo"), info3Texto: get("cfgInfo3Texto")
+  };
+  await guardarEnGitHub();
+}
+
+/* ============================================================
+   NOSOTROS
+   ============================================================ */
+function cargarLogoPreview(){
+  const c = DATA.config;
+  logoBase64 = c.logoUrl || "";
+  const prev = document.getElementById("logoPreview");
+  if(!prev) return;
+  if(logoBase64) prev.innerHTML = `<img src="${logoBase64}" alt="Logo">`;
+  else prev.textContent = c.headerLogo || "🚐";
+}
+
+function onLogoSelect(input){
+  leerFoto(input, (dataUrl) => {
+    logoBase64 = dataUrl;
+    const prev = document.getElementById("logoPreview");
+    prev.innerHTML = `<img src="${dataUrl}" alt="Logo">`;
+    mostrarToast("Logo cargado. Pulsa Guardar para aplicarlo.");
+  }, 400);
+}
+
+function quitarLogo(){
+  if(!confirm("¿Quitar el logo real y volver al emoji?")) return;
+  logoBase64 = "";
+  const c = DATA.config;
+  const prev = document.getElementById("logoPreview");
+  prev.textContent = c.headerLogo || "🚐";
+}
+
+function cargarNosotrosForm(){
+  if(!DATA) return;
+  const c = DATA.config;
+  const ta = document.getElementById("cfgNosotrosTexto");
+  if(ta) ta.value = c.nosotrosTexto || "";
+  nosotrosFotoBase64 = c.nosotrosFoto || "";
+  const prev = document.getElementById("nosotrosFotoPreview");
+  if(prev){
+    if(nosotrosFotoBase64) prev.innerHTML = `<img src="${nosotrosFotoBase64}" alt="Nosotros">`;
+    else prev.innerHTML = "🖼️";
+  }
+  const stats = c.nosotrosStats || [];
+  const set = (id, v) => { const el = document.getElementById(id); if(el) el.value = v || ""; };
+  set("cfgStat1Num", stats[0]?.num); set("cfgStat1Lbl", stats[0]?.lbl);
+  set("cfgStat2Num", stats[1]?.num); set("cfgStat2Lbl", stats[1]?.lbl);
+  set("cfgStat3Num", stats[2]?.num); set("cfgStat3Lbl", stats[2]?.lbl);
+}
+
+function onNosotrosFoto(input){
+  leerFoto(input, (dataUrl) => {
+    nosotrosFotoBase64 = dataUrl;
+    previewFoto(dataUrl, "nosotrosFotoPreview");
+  });
+}
+
+async function guardarNosotros(){
+  const get = id => { const el = document.getElementById(id); return el ? el.value.trim() : ""; };
+  DATA.config.logoUrl = logoBase64;
+  DATA.config.nosotrosTexto = get("cfgNosotrosTexto");
+  DATA.config.nosotrosFoto = nosotrosFotoBase64;
+  DATA.config.nosotrosStats = [
+    { num: get("cfgStat1Num"), lbl: get("cfgStat1Lbl") },
+    { num: get("cfgStat2Num"), lbl: get("cfgStat2Lbl") },
+    { num: get("cfgStat3Num"), lbl: get("cfgStat3Lbl") }
+  ].filter(s => s.num || s.lbl);
+  await guardarEnGitHub();
+}
+
+/* ============================================================
+   LEGAL
+   ============================================================ */
+function cargarLegalForm(){
+  if(!DATA) return;
+  const c = DATA.config;
+  const set = (id, v) => { const el = document.getElementById(id); if(el) el.value = v || ""; };
+  set("cfgPrivacidad", c.privacidad);
+  set("cfgTerminos", c.terminos);
+  set("cfgPoliticaCancelacion", c.politicaCancelacion);
+  set("cfgSellos", (c.sellos || []).join("\n"));
+}
+
+async function guardarLegal(){
+  const get = id => { const el = document.getElementById(id); return el ? el.value.trim() : ""; };
+  DATA.config.privacidad = get("cfgPrivacidad");
+  DATA.config.terminos = get("cfgTerminos");
+  DATA.config.politicaCancelacion = get("cfgPoliticaCancelacion");
+  DATA.config.sellos = get("cfgSellos").split("\n").map(s => s.trim()).filter(Boolean);
+  await guardarEnGitHub();
+}
+
+/* ============================================================
+   VISTA PREVIA
+   ============================================================ */
+let vpTabActual = "inicio";
+function abrirVistaPrevia(){
+  vpTabActual = "inicio";
+  renderVistaPrevia();
+  document.getElementById("vistaPrevia").style.display = "block";
+  document.body.style.overflow = "hidden";
+  document.getElementById("vistaPrevia").scrollTop = 0;
+}
+function cerrarVistaPrevia(){
+  document.getElementById("vistaPrevia").style.display = "none";
+  document.body.style.overflow = "";
+}
+function cambiarVistaPrevia(nombre, boton){
+  vpTabActual = nombre;
+  document.querySelectorAll("#vistaPrevia .vp-vista").forEach(v => v.classList.remove("activa"));
+  const vista = document.getElementById("vp-vista-" + nombre);
+  if(vista) vista.classList.add("activa");
+  document.querySelectorAll("#vistaPrevia .vp-nav button").forEach(b => b.classList.remove("activo"));
+  if(boton) boton.classList.add("activo");
+  document.getElementById("vistaPrevia").scrollTop = 0;
+}
+function renderVistaPrevia(){
+  if(!DATA) return;
+  const c = DATA.config;
+  const cont = document.getElementById("vistaPreviaContenido");
+  const logo = c.logoUrl ? `<img src="${c.logoUrl}" style="height:1.2em;vertical-align:middle;">` : (c.headerLogo || "🚐");
+  const inicioHTML = `
+    <div style="background:linear-gradient(135deg,#0b3d91,#1e6fd9);color:#fff;padding:22px 20px;text-align:center;">
+      <h1 style="font-size:1.9rem;">${logo} ${escaparHTML(c.headerNombre || "Viajes Perdomo")}</h1>
+      <p style="opacity:.9;margin-top:4px;">${escaparHTML(c.headerSub || "")}</p>
+    </div>
+    <div style="max-width:1100px;margin:auto;padding:26px 18px;">
+      <div style="background:#fff;border-radius:14px;padding:30px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.12);">
+        <h2 style="color:#0b3d91;">${escaparHTML(c.heroTitulo || "")}</h2>
+        <p style="color:#555;margin:8px 0 18px;">${escaparHTML(c.heroTexto || "")}</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:22px;">
+        <div style="background:#fff;border-radius:14px;padding:20px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.12);">
+          <div style="font-size:2rem;">${escaparHTML(c.info1Icono)}</div>
+          <h3 style="color:#0b3d91;">${escaparHTML(c.info1Titulo)}</h3>
+          <p style="font-size:.88rem;color:#555;">${escaparHTML(c.info1Texto)}</p>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:20px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.12);">
+          <div style="font-size:2rem;">${escaparHTML(c.info2Icono)}</div>
+          <h3 style="color:#0b3d91;">${escaparHTML(c.info2Titulo)}</h3>
+          <p style="font-size:.88rem;color:#555;">${escaparHTML(c.info2Texto)}</p>
+        </div>
+        <div style="background:#fff;border-radius:14px;padding:20px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.12);">
+          <div style="font-size:2rem;">${escaparHTML(c.info3Icono)}</div>
+          <h3 style="color:#0b3d91;">${escaparHTML(c.info3Titulo)}</h3>
+          <p style="font-size:.88rem;color:#555;">${escaparHTML(c.info3Texto)}</p>
+        </div>
+      </div>
+    </div>
+  `;
+  const guaguasHTML = (DATA.guaguas || []).map(g => `
+    <div style="background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.12);">
+      ${g.foto ? `<img src="${g.foto}" style="width:100%;height:170px;object-fit:cover;">` : `<div style="width:100%;height:170px;display:flex;align-items:center;justify-content:center;font-size:3rem;background:#eef0f5;">${g.icono||"🚌"}</div>`}
+      <div style="padding:14px 18px;">
+        <h3 style="color:#0b3d91;">${g.icono||"🚌"} ${escaparHTML(g.nombre)}</h3>
+        <p style="font-size:.88rem;color:#555;">👥 ${escaparHTML(g.capacidad)}</p>
+        <p style="font-size:.88rem;color:#555;">${escaparHTML(g.descripcion||"")}</p>
+      </div>
+    </div>
+  `).join("");
+  const rutasHTML = (DATA.rutas || []).map(r => `
+    <div style="background:#fff;border-radius:14px;padding:14px 18px;box-shadow:0 6px 20px rgba(0,0,0,.12);margin-bottom:10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      ${r.foto ? `<img src="${r.foto}" style="width:70px;height:60px;border-radius:8px;object-fit:cover;">` : `<div style="width:70px;height:60px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#eef0f5;font-size:2rem;">🗺️</div>`}
+      <div style="flex:1;min-width:150px;">
+        <strong style="color:#0b3d91;">${escaparHTML(r.ruta)}</strong>
+        <div style="font-size:.82rem;color:#666;">📍 ${escaparHTML(r.salida)} · 🕒 ${escaparHTML(r.horario)}</div>
+      </div>
+      <div style="font-weight:800;color:#25D366;">${escaparHTML(r.precio)}</div>
+    </div>
+  `).join("");
+  const nosotrosHTML = `
+    <div style="background:#fff;border-radius:14px;padding:24px;box-shadow:0 6px 20px rgba(0,0,0,.12);">
+      <h2 style="color:#0b3d91;margin-bottom:12px;">Quiénes somos</h2>
+      <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
+        ${c.nosotrosFoto ? `<img src="${c.nosotrosFoto}" style="width:130px;height:130px;border-radius:50%;object-fit:cover;">` : `<div style="width:130px;height:130px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#eef0f5;font-size:3rem;">🚐</div>`}
+        <p style="flex:1;min-width:240px;font-size:.92rem;color:#444;line-height:1.7;">${escaparHTML(c.nosotrosTexto || "")}</p>
+      </div>
+      <div style="display:flex;gap:18px;margin-top:18px;flex-wrap:wrap;">
+        ${(c.nosotrosStats || []).map(s => `<div style="background:#f4f6fb;border-radius:10px;padding:10px 16px;text-align:center;"><div style="font-size:1.3rem;font-weight:800;color:#0b3d91;">${escaparHTML(s.num)}</div><div style="font-size:.75rem;color:#666;">${escaparHTML(s.lbl)}</div></div>`).join("")}
+      </div>
+    </div>
+  `;
+  cont.innerHTML = `
+    <div style="background:#fff;display:flex;justify-content:center;gap:8px;padding:12px;box-shadow:0 2px 10px rgba(0,0,0,.06);position:sticky;top:41px;z-index:8;">
+      <button style="padding:10px 18px;border-radius:30px;font-weight:600;border:none;cursor:pointer;background:#0b3d91;color:#fff;" onclick="cambiarVistaPrevia('inicio', this)">🏠 Inicio</button>
+      <button style="padding:10px 18px;border-radius:30px;font-weight:600;border:none;cursor:pointer;background:transparent;color:#0b3d91;" onclick="cambiarVistaPrevia('guaguas', this)">🚌 Guaguas</button>
+      <button style="padding:10px 18px;border-radius:30px;font-weight:600;border:none;cursor:pointer;background:transparent;color:#0b3d91;" onclick="cambiarVistaPrevia('rutas', this)">🗺️ Rutas</button>
+      <button style="padding:10px 18px;border-radius:30px;font-weight:600;border:none;cursor:pointer;background:transparent;color:#0b3d91;" onclick="cambiarVistaPrevia('nosotros', this)">👥 Nosotros</button>
+    </div>
+    <div class="vp-vista activa" id="vp-vista-inicio">${inicioHTML}</div>
+    <div class="vp-vista" id="vp-vista-guaguas" style="display:none;max-width:1100px;margin:auto;padding:26px 18px;"><h2 style="color:#0b3d91;margin-bottom:14px;">Nuestras Guaguas</h2><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;">${guaguasHTML}</div></div>
+    <div class="vp-vista" id="vp-vista-rutas" style="display:none;max-width:1100px;margin:auto;padding:26px 18px;"><h2 style="color:#0b3d91;margin-bottom:14px;">Rutas</h2>${rutasHTML}</div>
+    <div class="vp-vista" id="vp-vista-nosotros" style="display:none;max-width:1100px;margin:auto;padding:26px 18px;">${nosotrosHTML}</div>
+    <div style="background:#0b3d91;color:#fff;text-align:center;padding:26px;font-size:.88rem;margin-top:20px;">© ${new Date().getFullYear()} Viajes Perdomo</div>
+  `;
+  // Corregir: usar display en vp-vista
+  document.querySelectorAll("#vistaPrevia .vp-vista").forEach(v => v.style.display = "none");
+  document.getElementById("vp-vista-inicio").style.display = "block";
+}
+
+/* ============================================================
+   INICIO
+   ============================================================ */
+(async function init(){
+  const tieneConfig = cargarConfigGitHub();
+  if(tieneConfig && ghConfig){
+    actualizarEstadoConexion("loading", "Cargando datos desde GitHub...");
+    try{
+      const ok = await leerDatosDeGitHub();
+      if(ok){
+        actualizarEstadoConexion("ok", "Conectado a " + ghConfig.owner + "/" + ghConfig.repo);
+      }else{
+        actualizarEstadoConexion("ok", "Archivo no encontrado. Se creará al guardar.");
+      }
+    }catch(e){
+      actualizarEstadoConexion("error", "Error: " + e.message);
+      DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      renderTodo();
+    }
+  }else{
+    DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    renderTodo();
+    actualizarEstadoConexion("", "Configura tu token en la pestaña 🔑 GitHub");
+  }
+})();
+</script>
+</body>
+</html>
