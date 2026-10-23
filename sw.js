@@ -7,7 +7,7 @@
    Esto fuerza la actualización en todos los navegadores.
    ============================================================ */
 
-const CACHE_VERSION = "v2"; // ← Cambia este número al subir cambios
+const CACHE_VERSION = "v3"; // ← Cambia este número al subir cambios
 const CACHE_NAME = "viajes-perdomo-" + CACHE_VERSION;
 
 // Archivos que se cachean al instalar (el "shell" de la app)
