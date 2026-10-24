@@ -62,6 +62,15 @@
       "precio": "10,000 cup",
       "capacidad": 30,
       "foto": ""
+    },
+    {
+      "id": 2,
+      "ruta": "Puerto padre - Habana",
+      "salida": "Prueba",
+      "horario": "3pm",
+      "precio": "10,000 cup",
+      "capacidad": 30,
+      "foto": ""
     }
   ],
   "cardsSplash": [
