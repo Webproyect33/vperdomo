@@ -55,33 +55,6 @@
   ],
   "rutas": [
     {
-      "id": 2,
-      "ruta": "La Habana → Viñales",
-      "salida": "Terminal Central",
-      "horario": "7:00 AM",
-      "precio": "$30 USD",
-      "capacidad": 20,
-      "foto": ""
-    },
-    {
-      "id": 3,
-      "ruta": "Varadero → La Habana",
-      "salida": "Hotel Parque Central",
-      "horario": "10:00 AM / 4:00 PM",
-      "precio": "$25 USD",
-      "capacidad": 20,
-      "foto": ""
-    },
-    {
-      "id": 4,
-      "ruta": "La Habana → Trinidad",
-      "salida": "Terminal Central",
-      "horario": "6:30 AM",
-      "precio": "$35 USD",
-      "capacidad": 20,
-      "foto": ""
-    },
-    {
       "id": 5,
       "ruta": "Trinidad → La Habana",
       "salida": "Terminal Trinidad",
