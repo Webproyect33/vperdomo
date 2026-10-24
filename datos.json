@@ -51,14 +51,6 @@
       "capacidad": "30 pasajeros",
       "descripcion": "Aire acondicionado, asientos reclinables y WiFi.",
       "foto": ""
-    },
-    {
-      "id": 2,
-      "icono": "🚐",
-      "nombre": "Minibús Hyundai",
-      "capacidad": "20 pasajeros",
-      "descripcion": "Ideal para rutas cortas. Música y cargadores USB.",
-      "foto": ""
     }
   ],
   "rutas": [
