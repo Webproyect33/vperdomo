@@ -55,15 +55,6 @@
   ],
   "rutas": [
     {
-      "id": 1,
-      "ruta": "La Habana → Varadero",
-      "salida": "Terminal Central",
-      "horario": "8:00 AM / 2:00 PM",
-      "precio": "$25 USD",
-      "capacidad": 20,
-      "foto": ""
-    },
-    {
       "id": 2,
       "ruta": "La Habana → Viñales",
       "salida": "Terminal Central",
