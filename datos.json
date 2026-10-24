@@ -55,12 +55,12 @@
   ],
   "rutas": [
     {
-      "id": 5,
-      "ruta": "Trinidad → La Habana",
-      "salida": "Terminal Trinidad",
-      "horario": "9:00 AM",
-      "precio": "$35 USD",
-      "capacidad": 20,
+      "id": 1,
+      "ruta": "La Habana - Puerto Padre",
+      "salida": "Terminal de ómnibus",
+      "horario": "3pm",
+      "precio": "10,000 cup",
+      "capacidad": 30,
       "foto": ""
     }
   ],
