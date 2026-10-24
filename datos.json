@@ -20,9 +20,18 @@
     "nosotrosTexto": "Viajes Perdomo nació con la idea de ofrecer un transporte cómodo, seguro y confiable para quienes quieren descubrir Cuba sin complicaciones. Llevamos años conectando viajeros con los destinos más hermosos del país, con guaguas modernas y conductores profesionales que conocen cada ruta.",
     "nosotrosFoto": "",
     "nosotrosStats": [
-      { "num": "+500", "lbl": "Viajes realizados" },
-      { "num": "+1.200", "lbl": "Clientes felices" },
-      { "num": "5 años", "lbl": "De experiencia" }
+      {
+        "num": "+500",
+        "lbl": "Viajes realizados"
+      },
+      {
+        "num": "+1.200",
+        "lbl": "Clientes felices"
+      },
+      {
+        "num": "5 años",
+        "lbl": "De experiencia"
+      }
     ],
     "politicaCancelacion": "Puedes cancelar tu reserva sin coste hasta 24 horas antes de la salida. Si cancelas con menos tiempo, se aplicará un cargo del 50%. Para cancelar, escríbenos por WhatsApp con tu código de reserva.",
     "privacidad": "En Viajes Perdomo solo recogemos los datos necesarios para gestionar tu reserva: nombre, teléfono, ruta y asientos. Tus datos no se comparten con terceros y se eliminan cuando ya no son necesarios. Puedes solicitar su eliminación escribiéndonos por WhatsApp.",
@@ -49,14 +58,6 @@
       "nombre": "Minibús Hyundai",
       "capacidad": "20 pasajeros",
       "descripcion": "Ideal para rutas cortas. Música y cargadores USB.",
-      "foto": ""
-    },
-    {
-      "id": 3,
-      "icono": "🚍",
-      "nombre": "Autobús Yutong",
-      "capacidad": "45 pasajeros",
-      "descripcion": "Amplio equipaje, aire acondicionado y pantallas.",
       "foto": ""
     }
   ],
@@ -108,24 +109,92 @@
     }
   ],
   "cardsSplash": [
-    { "id": 1, "icono": "🚐", "titulo": "Flota moderna", "texto": "Guaguas cómodas con aire acondicionado y WiFi." },
-    { "id": 2, "icono": "🛡️", "titulo": "Viajes seguros", "texto": "Conductores profesionales y vehículos revisados." },
-    { "id": 3, "icono": "💰", "titulo": "Mejores precios", "texto": "Tarifas accesibles sin intermediarios." },
-    { "id": 4, "icono": "📍", "titulo": "Rutas populares", "texto": "La Habana, Varadero, Viñales, Trinidad y más." },
-    { "id": 5, "icono": "📱", "titulo": "Reserva fácil", "texto": "Reserva en segundos directo a nuestro WhatsApp." },
-    { "id": 6, "icono": "🕒", "titulo": "Salidas diarias", "texto": "Horarios flexibles que se adaptan a ti." }
+    {
+      "id": 1,
+      "icono": "🚐",
+      "titulo": "Flota moderna",
+      "texto": "Guaguas cómodas con aire acondicionado y WiFi."
+    },
+    {
+      "id": 2,
+      "icono": "🛡️",
+      "titulo": "Viajes seguros",
+      "texto": "Conductores profesionales y vehículos revisados."
+    },
+    {
+      "id": 3,
+      "icono": "💰",
+      "titulo": "Mejores precios",
+      "texto": "Tarifas accesibles sin intermediarios."
+    },
+    {
+      "id": 4,
+      "icono": "📍",
+      "titulo": "Rutas populares",
+      "texto": "La Habana, Varadero, Viñales, Trinidad y más."
+    },
+    {
+      "id": 5,
+      "icono": "📱",
+      "titulo": "Reserva fácil",
+      "texto": "Reserva en segundos directo a nuestro WhatsApp."
+    },
+    {
+      "id": 6,
+      "icono": "🕒",
+      "titulo": "Salidas diarias",
+      "texto": "Horarios flexibles que se adaptan a ti."
+    }
   ],
   "testimonios": [
-    { "id": 1, "texto": "Excelente servicio, la guagua muy cómoda y el chofer muy amable.", "autor": "María G.", "estrellas": 5, "fecha": "Marzo 2025" },
-    { "id": 2, "texto": "Reservé por WhatsApp y todo fue rapidísimo. Recomendado.", "autor": "Carlos P.", "estrellas": 5, "fecha": "Febrero 2025" },
-    { "id": 3, "texto": "Viajé a Varadero con mi familia y todo perfecto.", "autor": "Ana L.", "estrellas": 4, "fecha": "Enero 2025" }
+    {
+      "id": 1,
+      "texto": "Excelente servicio, la guagua muy cómoda y el chofer muy amable.",
+      "autor": "María G.",
+      "estrellas": 5,
+      "fecha": "Marzo 2025"
+    },
+    {
+      "id": 2,
+      "texto": "Reservé por WhatsApp y todo fue rapidísimo. Recomendado.",
+      "autor": "Carlos P.",
+      "estrellas": 5,
+      "fecha": "Febrero 2025"
+    },
+    {
+      "id": 3,
+      "texto": "Viajé a Varadero con mi familia y todo perfecto.",
+      "autor": "Ana L.",
+      "estrellas": 4,
+      "fecha": "Enero 2025"
+    }
   ],
   "faqs": [
-    { "id": 1, "pregunta": "¿Cómo reservo mi asiento?", "respuesta": "Toca el botón Reservar, elige tu ruta, fecha y asiento, y envía el código por WhatsApp. El gestor te confirmará." },
-    { "id": 2, "pregunta": "¿Puedo llevar equipaje grande?", "respuesta": "Sí, cada pasajero puede llevar una maleta grande y una de mano sin coste extra." },
-    { "id": 3, "pregunta": "¿Hay descuento para niños?", "respuesta": "Los menores de 5 años viajan gratis si van en brazos. De 5 a 12 años tienen 50% de descuento." },
-    { "id": 4, "pregunta": "¿Qué pasa si llueve?", "respuesta": "Las salidas se mantienen salvo condiciones extremas. En ese caso te avisamos y reprogramamos." },
-    { "id": 5, "pregunta": "¿Puedo cancelar mi reserva?", "respuesta": "Sí, puedes cancelar sin coste hasta 24 horas antes de la salida." }
+    {
+      "id": 1,
+      "pregunta": "¿Cómo reservo mi asiento?",
+      "respuesta": "Toca el botón Reservar, elige tu ruta, fecha y asiento, y envía el código por WhatsApp. El gestor te confirmará."
+    },
+    {
+      "id": 2,
+      "pregunta": "¿Puedo llevar equipaje grande?",
+      "respuesta": "Sí, cada pasajero puede llevar una maleta grande y una de mano sin coste extra."
+    },
+    {
+      "id": 3,
+      "pregunta": "¿Hay descuento para niños?",
+      "respuesta": "Los menores de 5 años viajan gratis si van en brazos. De 5 a 12 años tienen 50% de descuento."
+    },
+    {
+      "id": 4,
+      "pregunta": "¿Qué pasa si llueve?",
+      "respuesta": "Las salidas se mantienen salvo condiciones extremas. En ese caso te avisamos y reprogramamos."
+    },
+    {
+      "id": 5,
+      "pregunta": "¿Puedo cancelar mi reserva?",
+      "respuesta": "Sí, puedes cancelar sin coste hasta 24 horas antes de la salida."
+    }
   ],
   "reservas": []
 }
